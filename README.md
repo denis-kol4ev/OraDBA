@@ -1,2 +1,2 @@
-# denis-kol4ev
-scripts and howtos for day to day DBA work
+# OraDBA
+scripts and howtos for day to day Oracle DBA work
