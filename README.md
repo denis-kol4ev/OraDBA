@@ -8,6 +8,7 @@ scripts and howtos for day to day Oracle DBA work
   1. [ASMlib configure](https://github.com/denis-kol4ev/OraDBA/wiki/ASMlib-configure)
   2. [ASMlib deconfigure](https://github.com/denis-kol4ev/OraDBA/wiki/ASMlib-deconfigure)
   3. [ASMlib useful commands](https://github.com/denis-kol4ev/OraDBA/wiki/ASMlib-useful-commands)
+  4.[Configuring Oracle ASM Filter Driver during installation](https://github.com/denis-kol4ev/OraDBA/wiki/Configuring-Oracle-ASM-Filter-Driver-during-installation)
   3. list
      * With some
      * Sub bullets
