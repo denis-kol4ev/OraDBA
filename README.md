@@ -15,3 +15,24 @@ scripts and howtos for day to day Oracle DBA work
      * With some
      * Sub bullets
 </details>
+
+
+<details>
+  <summary>Linux</summary>
+  
+  ### Linux howtos for DBAs
+  1. []()
+  2. []()
+  3. []()
+  4. []()
+  5. []()
+  6. []()
+  3. list
+     * With some
+     * Sub bullets
+</details>
+
+
+
+
+
