@@ -10,6 +10,7 @@ scripts and howtos for day to day Oracle DBA work
   3. [ASMlib useful commands](https://github.com/denis-kol4ev/OraDBA/wiki/ASMlib-useful-commands)
   4. [Configuring Oracle ASM Filter Driver during installation](https://github.com/denis-kol4ev/OraDBA/wiki/Configuring-Oracle-ASM-Filter-Driver-during-installation)
   5. [Prepare new disk devices for ASM with ASMFD](https://github.com/denis-kol4ev/OraDBA/wiki/Prepare-new-disk-devices-for-ASM-with-ASMFD)
+  6. [Prepare new disk devices for ASM with ASMLib](https://github.com/denis-kol4ev/OraDBA/wiki/Prepare-new-disk-devices-for-ASM-with-ASMLib)
   3. list
      * With some
      * Sub bullets
