@@ -26,7 +26,7 @@ scripts and howtos for day to day Oracle DBA work
      * 2. []()
   3. Opatch
      * 1. []()
-     * 2. []()
+     * 2. [OPatch rolling back multiple patches](https://github.com/denis-kol4ev/OraDBA/wiki/OPatch-rolling-back-multiple-patches)
  
 </details>
 
