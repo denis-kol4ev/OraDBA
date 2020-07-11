@@ -19,7 +19,7 @@ scripts and howtos for day to day Oracle DBA work
   
   ### Oracle RDBMS and GRID software: Install,Patch,Upgrade,Unistall
   1. RDBMS
-     * 1. []()
+     * 1. [Installation of Oracle RDBMS software in silent mode](https://github.com/denis-kol4ev/OraDBA/wiki/Installation-of-Oracle-RDBMS-software-in-silent-mode)
      * 2. []()
   2. GRID
      * 1. [Grid Infrastructure 12.2, 19.3 Set Up Software Only](https://github.com/denis-kol4ev/OraDBA/wiki/Grid-Infrastructure-12.2-19.3-Set-Up-Software-Only)
