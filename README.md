@@ -25,7 +25,7 @@ scripts and howtos for day to day Oracle DBA work
      * 1. [Grid Infrastructure 12.2, 19.3 Set Up Software Only](https://github.com/denis-kol4ev/OraDBA/wiki/Grid-Infrastructure-12.2-19.3-Set-Up-Software-Only)
      * 2. []()
   3. Opatch
-     * 1. []()
+     * 1. [OPatch how to auto suppress or auto answer the question](https://github.com/denis-kol4ev/OraDBA/wiki/OPatch-how-to-auto-suppress-or-auto-answer-the-question)
      * 2. [OPatch rolling back multiple patches](https://github.com/denis-kol4ev/OraDBA/wiki/OPatch-rolling-back-multiple-patches)
  
 </details>
