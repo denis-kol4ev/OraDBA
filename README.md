@@ -34,7 +34,12 @@ scripts and howtos for day to day Oracle DBA work
   <summary>Linux</summary>
   
   ### Linux howtos for DBAs
-  1. [Kernel update](https://github.com/denis-kol4ev/OraDBA/wiki/Kernel-update)
+  1. LVM
+     * 1. []()
+     * 2. []()
+     * 3. []()
+     * 4. []()
+  2. [Kernel update](https://github.com/denis-kol4ev/OraDBA/wiki/Kernel-update)
   
 </details>
 
