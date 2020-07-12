@@ -35,7 +35,7 @@ scripts and howtos for day to day Oracle DBA work
   
   ### Linux howtos for DBAs
   1. LVM
-     * 1. []()
+     * 1. [Renaming a Logical Volume for non root Volume Group](https://github.com/denis-kol4ev/OraDBA/wiki/Renaming-a-Logical-Volume-for-non-root-Volume-Group)
      * 2. []()
      * 3. []()
      * 4. []()
