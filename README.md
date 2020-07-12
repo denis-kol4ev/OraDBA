@@ -38,7 +38,7 @@ scripts and howtos for day to day Oracle DBA work
      * 1. [Renaming a Logical Volume for non root Volume Group](https://github.com/denis-kol4ev/OraDBA/wiki/Renaming-a-Logical-Volume-for-non-root-Volume-Group)
      * 2. [Renaming a non root Volume Group](https://github.com/denis-kol4ev/OraDBA/wiki/Renaming-a-non-root-Volume-Group)
      * 3. [Reducing root logical volume](https://github.com/denis-kol4ev/OraDBA/wiki/Reducing-root-logical-volume)
-     * 4. []()
+     * 4. [Removing a disk from a logical volume](https://github.com/denis-kol4ev/OraDBA/wiki/Removing-a-disk-from-a-logical-volume)
   2. [Kernel update](https://github.com/denis-kol4ev/OraDBA/wiki/Kernel-update)
   
 </details>
