@@ -37,7 +37,7 @@ scripts and howtos for day to day Oracle DBA work
   1. LVM
      * 1. [Renaming a Logical Volume for non root Volume Group](https://github.com/denis-kol4ev/OraDBA/wiki/Renaming-a-Logical-Volume-for-non-root-Volume-Group)
      * 2. [Renaming a non root Volume Group](https://github.com/denis-kol4ev/OraDBA/wiki/Renaming-a-non-root-Volume-Group)
-     * 3. []()
+     * 3. [Reducing root logical volume](https://github.com/denis-kol4ev/OraDBA/wiki/Reducing-root-logical-volume)
      * 4. []()
   2. [Kernel update](https://github.com/denis-kol4ev/OraDBA/wiki/Kernel-update)
   
