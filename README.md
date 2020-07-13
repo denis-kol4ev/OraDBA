@@ -35,7 +35,7 @@ scripts and howtos for day to day Oracle DBA work
   
   ### Data Guard and Data Guard Broker essentials
   1. Data Guard
-     * 1. []()
+     * 1. [Creating physical standby database using rman duplicate](https://github.com/denis-kol4ev/OraDBA/wiki/Creating-physical-standby-database-using-rman-duplicate)
      * 2. []()
   2. Data Guard Broker
      * 1. []()
