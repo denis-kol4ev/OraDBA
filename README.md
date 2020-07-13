@@ -31,6 +31,19 @@ scripts and howtos for day to day Oracle DBA work
 </details>
 
 <details>
+  <summary>Data Guard</summary>
+  
+  ### Data Guard and Data Guard Broker essentials
+  1. Data Guard
+     * 1. []()
+     * 2. []()
+  2. Data Guard Broker
+     * 1. []()
+     * 2. []()
+     
+</details>
+
+<details>
   <summary>Linux</summary>
   
   ### Linux howtos for DBAs
