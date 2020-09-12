@@ -22,7 +22,7 @@ scripts and howtos for day to day Oracle DBA work
      * 1. [Installation of Oracle RDBMS software in silent mode (software only install)](https://github.com/denis-kol4ev/OraDBA/wiki/Installation-of-Oracle-RDBMS-software-in-silent-mode-(software-only-install))
      * 2. [Cloning-an-Oracle-Home](https://github.com/denis-kol4ev/OraDBA/wiki/Cloning-an-Oracle-Home)
   2. GRID
-     * 1. [Grid Infrastructure 12.2, 19.3 Set Up Software Only](https://github.com/denis-kol4ev/OraDBA/wiki/Grid-Infrastructure-12.2-19.3-Set-Up-Software-Only)
+     * 1. [Installation of Oracle GRID software in silent mode (software only install)](https://github.com/denis-kol4ev/OraDBA/wiki/Installation-of-Oracle-GRID-software-in-silent-mode-(software-only-install))
      * 2. []()
   3. Opatch
      * 1. [OPatch how to auto suppress or auto answer the question](https://github.com/denis-kol4ev/OraDBA/wiki/OPatch-how-to-auto-suppress-or-auto-answer-the-question)
