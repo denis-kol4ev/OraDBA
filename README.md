@@ -12,6 +12,7 @@ scripts and howtos for day to day Oracle DBA work
   5. [Prepare new disk devices for ASM with ASMFD](https://github.com/denis-kol4ev/OraDBA/wiki/Prepare-new-disk-devices-for-ASM-with-ASMFD)
   6. [Prepare new disk devices for ASM with ASMLib](https://github.com/denis-kol4ev/OraDBA/wiki/Prepare-new-disk-devices-for-ASM-with-ASMLib)
   7. [Prepare new disk devices for ASM with ASMLib (multipath)](https://github.com/denis-kol4ev/OraDBA/wiki/Prepare-new-disk-devices-for-ASM-with-ASMLib-(multipath))
+  8. [Create ASM disk group](https://github.com/denis-kol4ev/OraDBA/wiki/Create-ASM-disk-group)
   
 </details>
 
