@@ -1,3 +1,6 @@
+-- Procedure drop_user_prc allow non administrative user to drop database users, 
+-- except oracle maintained users.
+
 -- create log table
 create table system.drop_user_log (
   date_time date,
