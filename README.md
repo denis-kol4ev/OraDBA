@@ -1,5 +1,8 @@
 # OraDBA
-scripts and howtos for day to day Oracle DBA work
+
+[Scripts for day to day Oracle DBA work](https://github.com/denis-kol4ev/OraDBA/tree/master/Scripts)
+
+[Howtos for day to day Oracle DBA work](https://github.com/denis-kol4ev/OraDBA/wiki)
 
 <details>
   <summary>ASM</summary>
