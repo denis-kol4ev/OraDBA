@@ -1,7 +1,7 @@
 #!/bin/bash
 # get basic server specification
 
-host
+hostname
 lscpu | egrep "^CPU\(s\)" | awk '{print "CPU: " $2}'
 free -h | grep Mem | awk '{print "RAM: " $2}'
 #lsblk | grep disk | awk '{print $1, $4, $6}' | sort -k2 -n
