@@ -1,5 +1,5 @@
 #!/bin/bash
-# matching disk devices to ASM labels and scsi numbers ***
+# matching disk devices to ASM labels and scsi numbers
 
 printf "%s\t%s\t%s\n" "Disk" "ASM Label" "[H:B:T:L]"
 for i in $(lsblk -f | grep oracleasm |  sort -k3 | awk '{gsub(/[[:punct:]]|[[:digit:]]/, "", $1)}; {print $1";"$3}'); 
