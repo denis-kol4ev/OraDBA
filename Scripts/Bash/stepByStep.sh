@@ -1,11 +1,10 @@
 #!/bin/bash
 
 if [[ $# -eq 0 ]]; then
-    echo "Script requires an argument with a step number"
-    exit 0
+    START_STEP=1
+else 
+    START_STEP=$1
 fi
-
-START_STEP=$1
 
 CURR_STEP=1
 if [[ ${CURR_STEP} -eq ${START_STEP} ]]; then
