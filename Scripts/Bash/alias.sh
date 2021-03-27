@@ -1,7 +1,9 @@
 #!/bin/bash
-IP=111.111.111.30
+IP=10.10.10.222
 MASK=/24
-DEV=ens32
+DEV=eth1
+LISTENER=listener_vip
+ORACLE_HOME=/opt/oracle/grid/19.3
 
 case $1 in
 'start')
@@ -11,6 +13,7 @@ case $1 in
             exit 1
     fi
     sudo ip addr add ${IP}${MASK} dev ${DEV}
+    ${ORACLE_HOME}/bin/srvctl start listener -l ${LISTENER}
     ping -c 1 ${IP} > /dev/null 2>&1
     if [ $? -eq 0 ]; then
         echo "Alias UP"
@@ -24,6 +27,7 @@ case $1 in
             echo "IP ${IP} not used"
             exit 1
     fi
+    ${ORACLE_HOME}/bin/srvctl stop listener -l ${LISTENER}
     sudo ip addr del ${IP}${MASK} dev ${DEV}
     ping -c 1 ${IP} > /dev/null 2>&1
     if [ $? -ne 0 ]; then
