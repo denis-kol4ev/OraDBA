@@ -1,5 +1,6 @@
 ---
-- hosts: test_servers
+- name: patch installation
+  hosts: test_servers
   tasks:
     - name: Copy patch
       copy:
