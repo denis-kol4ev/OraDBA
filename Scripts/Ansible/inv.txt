@@ -1,8 +1,21 @@
 [test_servers]
-devil ansible_host=111.111.111.30 ansible_user=oracle ansible_ssh_private_key=/home/oracle/.ssh/id_rsa
+angel ansible_host=111.111.111.20 
+devil ansible_host=111.111.111.30 
+
+[test_servers:vars]
+ansible_user=oracle 
+ansible_ssh_private_key=/home/oracle/.ssh/id_rsa
 
 [prod_servers]
 s2 ansible_host=111.111.111.40 ansible_user=oracle ansible_ssh_private_key=/home/oracle/.ssh/id_rsa
 
 [dev_servers]
 trinity
+
+[all_servers:children]
+test_servers
+prod_servers
+dev_servers
+
+[all_servers:vars]
+owner=den
