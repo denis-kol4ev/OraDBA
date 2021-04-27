@@ -1,0 +1,13 @@
+---
+- hosts: test_servers
+  tasks:
+    - name: Copy patch
+      copy:
+       src: /tmp/p19999993_134000_Generic.zip
+       dest: /opt/oracle/distr/p19999993_134000_Generic.zip
+
+    - name: Unzip patch
+      unarchive:
+       src: /opt/oracle/distr/p19999993_134000_Generic.zip
+       dest: /opt/oracle/distr
+       remote_src: yes
