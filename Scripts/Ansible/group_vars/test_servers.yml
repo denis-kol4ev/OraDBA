@@ -1,3 +1,0 @@
----
-ansible_user : oracle 
-ansible_ssh_private_key : /home/oracle/.ssh/id_rsa
