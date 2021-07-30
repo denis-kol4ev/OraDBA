@@ -1,9 +1,9 @@
 declare
   v_schema          varchar2(30) := 'QWERTY';
   v_role_name_check varchar2(100);
-  v_sqlstr          varchar2(100);
-  v_ro_role_postfix varchar2(30) := '_READ_ONLY';
-  v_rw_role_postfix varchar2(30) := '_READ_WRITE';
+  v_sqlstr          varchar2(200);
+  v_ro_role_postfix varchar2(40) := '_READ_ONLY';
+  v_rw_role_postfix varchar2(40) := '_READ_WRITE';
   v_role_name       varchar2(100);
   v_grant_cnt       number;
 
