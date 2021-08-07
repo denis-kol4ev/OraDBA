@@ -1,3 +1,5 @@
+ -- использование функции XMLSeqence для преобразования значения столбца в строки
+ 
  with servers (host, services) as 
    (
    select 'host1','aaa,bbb,ccc' from dual
