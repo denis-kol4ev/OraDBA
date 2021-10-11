@@ -55,10 +55,16 @@ if [[ $(ar -tv libknlopt.a | egrep -c "kecwr.o") -eq 1 ]];
         check_rat
 fi
 
-# How to remove the Oracle OLAP Option from a 12c Database (Doc ID 1940098.1)	
-v_cdb=$((echo "set head off"; echo "select upper(cdb) from v\$database;") | sqlplus -s / as sysdba | sed "/^$/d")
+# How to remove the Oracle OLAP Option from a 12c Database (Doc ID 1940098.1)
+v_db_role=$((echo "set head off"; echo "select upper(database_role) from v\$database;") | sqlplus -s / as sysdba | sed "/^$/d")
 
-# echo $v_cdb
+if [[ $v_db_role != "PRIMARY" ]];
+    then
+        echo -e "For remove of OLAP component connect to PRIMARY database \n"
+        exit 
+fi
+
+v_cdb=$((echo "set head off"; echo "select upper(cdb) from v\$database;") | sqlplus -s / as sysdba | sed "/^$/d")
 
 if [[ $v_cdb != "NO" ]];
     then
@@ -68,11 +74,7 @@ fi
 
 v_olap_db_installed=$((echo "set head off"; echo "select count(*) from dba_registry where comp_name like '%OLAP%';") | sqlplus -s / as sysdba)
 
-# echo $v_olap_db_installed
-
 v_olap_db_used=$((echo "set head off"; echo "select count(*) from dba_aws where owner !='SYS';") | sqlplus -s / as sysdba)
-
-# echo $v_olap_db_used 
 
 if [[ $v_olap_db_installed -gt 0 ]]; 
     then
