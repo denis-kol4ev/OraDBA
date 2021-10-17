@@ -1,3 +1,4 @@
+-- Get sysdate from remote database
 create or replace function sys.remote_sysdate(p_db_link_name in varchar2)
   return date as
   l_remote_sysdate date;
