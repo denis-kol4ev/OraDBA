@@ -56,6 +56,14 @@ if [[ $(ar -tv libknlopt.a | egrep -c "kecwr.o") -eq 1 ]];
 fi
 
 # How to remove the Oracle OLAP Option from a 12c Database (Doc ID 1940098.1)
+v_db_ver=$((echo "set head off"; echo "select substr(version,1,2) from v\$instance;") | sqlplus -s / as sysdba | sed "/^$/d")
+
+if [[ $v_db_ver -lt 12 ]];
+    then
+        echo -e "Only 12 and upper versions are supported \n"
+        exit
+fi
+
 v_db_role=$((echo "set head off"; echo "select upper(database_role) from v\$database;") | sqlplus -s / as sysdba | sed "/^$/d")
 
 if [[ $v_db_role != "PRIMARY" ]];
