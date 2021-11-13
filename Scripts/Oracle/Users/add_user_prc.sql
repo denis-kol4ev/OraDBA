@@ -13,3 +13,4 @@ begin
   execute immediate 'grant create table to ' || username;
 end;
 /
+--- select dbms_random.string(opt => 'x', len => 5) || '#' || dbms_random.string(opt => 'l', len => 4) as c from dual;
