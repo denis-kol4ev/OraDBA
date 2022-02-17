@@ -26,3 +26,18 @@ EXCEPTION
     RETURN FALSE;
 END valid_deptid;
 /
+
+-- Использование логической переменной в качестве флага
+declare
+  order_exceeds_balance boolean;
+  order_total           number := 120;
+  max_allowable_order   number := 100;
+begin
+  order_exceeds_balance := order_total > max_allowable_order;
+  if order_exceeds_balance then
+    dbms_output.put_line('Order balance exceeded');
+  else
+    dbms_output.put_line('Let''s do order!');
+  end if;
+end;
+/
