@@ -43,3 +43,17 @@ begin
   end if;
 end;
 /
+
+-- Nested if
+declare
+  v1 number := 100;
+  v2 number := 99;
+begin
+  if v1 > v2 then
+    dbms_output.put_line(v1 || ' is greater than ' || v2);
+    if (v2 / v1) < 0.5 then
+      dbms_output.put_line(v1 || ' is significant greater than ' || v2);     
+      end if;
+  end if;
+end;
+/
