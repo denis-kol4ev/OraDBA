@@ -7,7 +7,7 @@ begin
       dbms_output.put_line('v1 is ' || v1);
     when 'B' then
       dbms_output.put_line('v1 is ' || v1);
-    else -- не является обязательной
+    else
       dbms_output.put_line('v1 is unknown ');
   end case;
 end;
