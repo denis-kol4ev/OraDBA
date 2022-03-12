@@ -1,4 +1,4 @@
--- Case examples
+-- CASE examples
 -- 1. Searched CASE statement examples
 declare
   v1 number := 10;
