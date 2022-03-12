@@ -26,3 +26,17 @@ begin
   end case;
 end;
 /
+
+declare
+  v1 number := 10;
+begin
+  case 
+    when v1 = 10 then
+      dbms_output.put_line('v1 = 10');
+    when v1 = 20 then
+      dbms_output.put_line('v1 = 20');
+    else
+      dbms_output.put_line('v1 is unknown ');
+  end case;
+end;
+/
