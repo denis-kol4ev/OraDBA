@@ -1,4 +1,4 @@
--- CASE examples
+-- CASE statement and CASE expression examples
 
 /*
 Простая команда CASE используется тогда, когда решение принимается на основании результата одного выражения.
@@ -47,5 +47,26 @@ begin
     else
       dbms_output.put_line('v1 is unknown ');
   end case;
+end;
+/
+
+/*
+The CASE statement supported by PL/SQL is very similar to the CASE expression. 
+The main difference is that the statement is finished with an END CASE statement rather than just END.
+*/
+
+-- 3. CASE expression example
+declare
+  v_dep_no number := 20;
+  v_dep_desc  varchar2(20);
+begin
+  v_dep_desc := case v_dep_no
+                 when 10 then 'Accounting'
+                 when 20 then 'Research'
+                 when 30 then 'Sales'
+                 when 40 then 'Operations'
+                 else 'Unknown'
+               end;
+dbms_output.put_line(v_dep_desc);
 end;
 /
