@@ -51,8 +51,9 @@ end;
 /
 
 /*
-The CASE statement supported by PL/SQL is very similar to the CASE expression. 
-The main difference is that the statement is finished with an END CASE statement rather than just END.
+Main difference is that the CASE expression returns a value whereas the CASE statement performs actions.
+CASE expression can be used in both SQL and PL/SQL, whereas CASE statement can only be used in PL/SQL.
+CASE statement is finished with an END CASE, statement rather than just END.
 */
 
 -- 3. CASE expression example
