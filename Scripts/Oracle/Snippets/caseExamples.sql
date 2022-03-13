@@ -56,7 +56,7 @@ CASE expression can be used in both SQL and PL/SQL, whereas CASE statement can o
 CASE statement is finished with an END CASE, statement rather than just END.
 */
 
--- 3. CASE expression example
+-- 3. CASE expression examples
 declare
   v_dep_no number := 20;
   v_dep_desc  varchar2(20);
@@ -69,5 +69,21 @@ begin
                  else 'Unknown'
                end;
 dbms_output.put_line(v_dep_desc);
+end;
+/
+
+declare
+  v_boolean boolean := null;
+  function f_bool_to_varch2(v_flag in boolean) return varchar2 is
+  begin
+    return 
+    case v_flag 
+      when true then 'True' 
+      when false then 'False' 
+      else 'Null'
+    end;
+  end f_bool_to_varch2;
+begin
+  dbms_output.put_line(f_bool_to_varch2(v_boolean));
 end;
 /
