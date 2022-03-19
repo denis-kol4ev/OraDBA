@@ -87,3 +87,10 @@ begin
   dbms_output.put_line(f_bool_to_varch2(v_boolean));
 end;
 /
+
+begin
+  dbms_output.put_line(case when trim(to_char(sysdate, 'DAY')) in
+                       ('SATURDAY', 'SUNDAY') then 'Holiday' else
+                       'Working day' end);
+end;
+/
