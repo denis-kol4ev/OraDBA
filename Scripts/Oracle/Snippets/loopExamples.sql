@@ -1,8 +1,15 @@
-DROP TABLE sales_data
+DROP TABLE sales_data;
 /
 
-CREATE TABLE sales_data (year INTEGER, sales_amount NUMBER)
+CREATE TABLE sales_data (year INTEGER, sales_amount NUMBER);
 /
+
+insert into sales_data values(2000, 1000);
+insert into sales_data values(2001, 1500);
+insert into sales_data values(2002, 2000);
+insert into sales_data values(2003, 2300);
+insert into sales_data values(2004, 3100);
+commit;
 
 CREATE OR REPLACE PROCEDURE display_total_sales (year_in IN PLS_INTEGER)
 IS
@@ -31,9 +38,27 @@ END display_multiple_years;
 /
 
 /*
-Цикл FOR существует в двух формах: числовой и курсорной. В числовых циклах FOR про-
-граммист задает начальное и конечное целочисленные значения, а PL/SQL перебирает
-все промежуточные значения, после чего завершает цикл:
+Цикл WHILE имеет много общего с простым циклом. Принципиальное отличие заключается в том, 
+что условие завершения проверяется перед выполнением очередной итерации.
+*/
+CREATE OR REPLACE PROCEDURE display_multiple_years (
+   start_year_in IN PLS_INTEGER
+ , end_year_in   IN PLS_INTEGER
+)
+IS
+   l_current_year   PLS_INTEGER := start_year_in;
+BEGIN
+   WHILE (l_current_year <= end_year_in)
+   LOOP
+      display_total_sales (l_current_year);
+      l_current_year := l_current_year + 1;
+   END LOOP;
+END display_multiple_years;
+/
+
+/*
+Цикл FOR существует в двух формах: числовой и курсорной. В числовых циклах FOR задается начальное и конечное целочисленные значения, 
+а PL/SQL перебирает все промежуточные значения, после чего завершает цикл.
 */
 CREATE OR REPLACE PROCEDURE display_multiple_years (
    start_year_in IN PLS_INTEGER
@@ -63,29 +88,8 @@ BEGIN
         FROM sales_data
        WHERE year BETWEEN start_year_in AND end_year_in)
    LOOP
-   -- Процедуре передается запись, неявно объявленная
-   -- с типом sales_data%ROWTYPE...
+   -- Процедуре передается неявно объявленная запись с типом sales_data%ROWTYPE...
       display_total_sales (sales_rec.year);
-   END LOOP;
-END display_multiple_years;
-/
-
-/*
-Цикл WHILE имеет много общего с простым циклом. Принципиальное отличие за-
-ключается в том, что условие завершения проверяется перед выполнением очередной
-итерации.
-*/
-CREATE OR REPLACE PROCEDURE display_multiple_years (
-   start_year_in IN PLS_INTEGER
- , end_year_in   IN PLS_INTEGER
-)
-IS
-   l_current_year   PLS_INTEGER := start_year_in;
-BEGIN
-   WHILE (l_current_year <= end_year_in)
-   LOOP
-      display_total_sales (l_current_year);
-      l_current_year := l_current_year + 1;
    END LOOP;
 END display_multiple_years;
 /
