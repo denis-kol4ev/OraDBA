@@ -105,3 +105,15 @@ BEGIN
   END LOOP;
 END display_multiple_years;
 /
+
+/*
+Бесконечный цикл.
+Например нам нужно постоянно выполнять сбор данных с паузой между итерациями.  
+*/
+BEGIN
+  LOOP
+  dbms_output.put_line(sysdate);
+  dbms_lock.sleep(5);
+  END LOOP;
+END;
+/
