@@ -131,3 +131,20 @@ BEGIN
 END;
 /
 
+/*
+Команду continue можно использовать для прерывания внутренних циклов и 
+передачи управления внешнему циклу, для этого используются метки циклов.
+*/
+BEGIN
+  <<outer>>
+  FOR outer_index IN 1 .. 5 LOOP
+    dbms_output.put_line('Outer counter = ' || to_char(outer_index));
+    <<inner>>
+    FOR inner_index IN 1 .. 5 LOOP
+      dbms_output.put_line('Inner counter = ' || to_char(inner_index));
+      CONTINUE outer;
+    END LOOP inner;
+  END LOOP outer;
+END;
+/
+
