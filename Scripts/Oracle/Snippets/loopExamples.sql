@@ -131,6 +131,17 @@ BEGIN
 END;
 /
 
+BEGIN
+  FOR l_index IN 1 .. 10 LOOP
+    if mod(l_index, 2) = 0
+    then null;
+    else
+    dbms_output.put_line('Counter=' || to_char(l_index));
+    end if;
+  END LOOP;
+END;
+/
+
 /*
 Команду continue можно использовать для прерывания внутренних циклов и 
 передачи управления внешнему циклу, для этого используются метки циклов.
