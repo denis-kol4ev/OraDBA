@@ -117,3 +117,16 @@ BEGIN
   END LOOP;
 END;
 /
+
+/*
+Команда continue используется для выхода из текущей итерации цикла и перехода к следующей.
+Альтернативный вариант исползовать конструкцию IF.
+*/
+BEGIN
+  FOR l_index IN 1 .. 10 LOOP
+    CONTINUE WHEN MOD(l_index, 2) = 0;
+    dbms_output.put_line('Counter=' || to_char(l_index));
+  END LOOP;
+END;
+/
+
