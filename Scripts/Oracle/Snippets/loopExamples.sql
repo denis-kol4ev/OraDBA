@@ -174,3 +174,16 @@ BEGIN
   END LOOP outer;
 END;
 /
+
+BEGIN
+  <<outer>>
+  FOR outer_index IN 1 .. 5 LOOP
+    DBMS_OUTPUT.PUT_LINE('Outer counter = ' || TO_CHAR(outer_index));
+    <<inner>>
+    FOR inner_index IN 1 .. 5 LOOP
+      DBMS_OUTPUT.PUT_LINE('Inner counter = ' || TO_CHAR(inner_index));
+      CONTINUE outer WHEN inner_index =4;
+    END LOOP inner;
+  END LOOP outer;
+END;
+/
