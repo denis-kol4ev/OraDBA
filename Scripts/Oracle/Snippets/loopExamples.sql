@@ -143,6 +143,22 @@ END;
 /
 
 /*
+Использование continue с несколькими условиям
+*/
+
+declare
+  v1 number := 0;
+begin
+  loop
+    v1 := v1 + 1;
+    exit when v1 = 10;
+    continue when v1 = 1;
+    continue when v1 = 5;
+    dbms_output.put_line('Counter=' || v1);
+  end loop;
+end;
+
+/*
 Команду continue можно использовать для прерывания внутренних циклов и 
 передачи управления внешнему циклу, для этого используются метки циклов.
 */
@@ -158,4 +174,3 @@ BEGIN
   END LOOP outer;
 END;
 /
-
