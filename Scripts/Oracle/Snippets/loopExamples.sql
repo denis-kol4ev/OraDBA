@@ -107,6 +107,22 @@ END display_multiple_years;
 /
 
 /*
+Получение информации о работе цикла FOR после его завершения
+*/
+declare
+  v_obj_cnt number := 0;
+  cursor cur_obj(v_username varchar2) is
+    select * from dba_objects o where o.owner = v_username;
+begin
+  for obj_rec in cur_obj(v_username => 'SYSTEM') loop
+    -- data processing here
+    v_obj_cnt := cur_obj%ROWCOUNT;
+  end loop;
+  dbms_output.put_line(v_obj_cnt);
+end;
+/
+
+/*
 Бесконечный цикл.
 Например нам нужно постоянно выполнять сбор данных с паузой между итерациями.  
 */
