@@ -111,12 +111,12 @@ END display_multiple_years;
 */
 declare
   v_obj_cnt number := 0;
-  cursor cur_obj(v_username varchar2) is
+  cursor obj_cur(v_username varchar2) is
     select * from dba_objects o where o.owner = v_username;
 begin
-  for obj_rec in cur_obj(v_username => 'SYSTEM') loop
+  for obj_rec in obj_cur(v_username => 'SYSTEM') loop
     -- data processing here
-    v_obj_cnt := cur_obj%ROWCOUNT;
+    v_obj_cnt := obj_cur%ROWCOUNT;
   end loop;
   dbms_output.put_line(v_obj_cnt);
 end;
