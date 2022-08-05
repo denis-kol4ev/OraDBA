@@ -1,11 +1,4 @@
--- -----------------------------------------------------------------------------------
--- File Name    : 
--- Author       : 
--- Description  : Data Pump export table partition via DBMS_DATAPUMP
--- Requirements : 
--- Call Syntax  : 
--- Last Modified: 
--- -----------------------------------------------------------------------------------
+-- Data Pump export table partition via DBMS_DATAPUMP
 
 -- Drop table
 drop table system.t1;
