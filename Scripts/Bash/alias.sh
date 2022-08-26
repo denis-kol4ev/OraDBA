@@ -1,5 +1,5 @@
 #!/bin/bash
-IP=10.10.10.222
+IP=10.10.10.22
 MASK=/24
 DEV=eth1
 LISTENER=listener_vip
