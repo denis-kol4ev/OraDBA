@@ -1,3 +1,20 @@
+-- Create table
+create table ARC_EDI.EXPDP_LOG
+(
+  schema_name         VARCHAR2(16),
+  table_name          VARCHAR2(32),
+  partition_name      VARCHAR2(16),
+  partition_row_count NUMBER,
+  partition_size_mb   NUMBER,
+  dir_name            VARCHAR2(16),
+  dir_path            VARCHAR2(64),
+  expdp_dump_file     VARCHAR2(64),
+  expdp_log_file      VARCHAR2(64),
+  expdp_par_file      VARCHAR2(64),
+  par_file_contents   CLOB,
+  exported            VARCHAR2(1) default 'N'
+);
+
 declare
   l_shema_name      varchar2(16) := 'ARC_EDI';
   l_tab_name        varchar2(32) := 'DOCS';
