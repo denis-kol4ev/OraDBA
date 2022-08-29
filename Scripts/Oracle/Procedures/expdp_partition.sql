@@ -1,4 +1,17 @@
--- Create table
+-- -----------------------------------------------------------------------------------
+-- Description:
+-- The procedure simplifies the process of preparing parameter files for unloading 
+-- partitions of table to dumps for long-term storage.
+-- When called:
+-- 1. creates a file with parameters for the expdp utility in the specified directory
+-- 2. print the command to call expdp
+-- 3. partition and upload attributes are logged to the expdp_log table.
+-- The administrator starts the upload using the formed command,
+-- upon successful completion, updates the entry in the expdp_log table,
+-- the exported field needs to be updated to Y.
+-- -----------------------------------------------------------------------------------
+
+-- Create log table
 create table MAINT.EXPDP_LOG
 (
   schema_name         VARCHAR2(16),
