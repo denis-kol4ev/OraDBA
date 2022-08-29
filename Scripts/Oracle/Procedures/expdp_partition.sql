@@ -51,7 +51,6 @@ execute immediate l_cmd
 
 with t as
  (
-  -- Partition size Mb
   select s.bytes / 1024 / 1024 as size_mb
     from dba_tab_partitions p, dba_segments s
    where p.table_owner = s.owner
@@ -61,7 +60,6 @@ with t as
      and p.table_name = l_tab_name
      and p.partition_name = l_part_name
   union all
-  -- Partition lob's size Mb
   select s.bytes / 1024 / 1024 as size_mb
     from dba_tab_partitions p, dba_lob_partitions l, dba_segments s
    where p.table_owner = l.table_owner
