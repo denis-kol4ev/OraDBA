@@ -21,6 +21,20 @@ EXCEPTION
 END;
 
 -- Handling standard oracle exceptions
+-- 00001, 00000, "unique constraint (%s.%s) violated"
+BEGIN
+  INSERT INTO hr.departments (department_id,
+                              department_name,
+                              manager_id,
+                              location_id) VALUES (10, 'Administration', 200, 1700);
+EXCEPTION
+    WHEN others THEN
+      IF SQLCODE = -00001 THEN
+    DBMS_OUTPUT.PUT_LINE('Duplicate department_id found');
+END IF;
+END;
+
+-- Handling standard oracle exceptions with EXCEPTION_INIT directive
 -- 02292 "integrity constraint (%s.%s) violated - child record found"
 DECLARE
   e_childrecord_exists EXCEPTION;
