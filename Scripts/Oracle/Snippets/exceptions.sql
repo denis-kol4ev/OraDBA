@@ -46,3 +46,20 @@ EXCEPTION
   WHEN e_childrecord_exists THEN
     DBMS_OUTPUT.PUT_LINE(' Cannot delete this department. There are employees in this department (child records exist.) ');
 END;
+
+-- Raise a user-defined exception via RAISE_APPLICATION_ERROR procedure 
+declare
+  date_of_manufacture date := to_date('01.10.2019', 'dd.mm.yyyy');
+  min_years           number := 3;
+  actual_years        number;
+begin
+  actual_years := months_between(trunc(sysdate, 'mm'),
+                                 trunc(date_of_manufacture, 'mm'));
+  if min_years > (actual_years / 12) then
+    raise_application_error(-20001,
+                            'Vehicle must be at least ' || min_years ||
+                            ' years old, actual age is ' ||
+                            floor(actual_years / 12) || ' years and ' ||
+                            mod(actual_years, 12) || ' month');
+  end if;
+end;
