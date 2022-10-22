@@ -1,3 +1,21 @@
+declare 
+v_file_cnt number;
+v_file_first number;
+v_file_last number;
+
+begin
+--select * from dba_data_files;
+
+select ceil(68*0.1) into v_file_cnt from dual;
+dbms_output.put_line('Recommended number of files to add: ' || v_file_cnt);
+for i in 1 .. v_file_cnt loop
+  v_file_cnt := v_file_cnt + 1;
+  dbms_output.put_line(v_file_cnt);
+  end loop;
+end;
+
+
+select * from dba_data_files f;
 -- Версия запроса без доп полей
 -- Добавление файла в табличное пространтсво.
 -- Находим файл с макисмальным номером в имени и увеличиваем на единицу.
