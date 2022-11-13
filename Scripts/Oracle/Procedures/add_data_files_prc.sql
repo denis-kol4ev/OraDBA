@@ -8,7 +8,7 @@ grant select on dba_free_space to maint;
 create or replace procedure maint.add_data_files_prc (v_tbs in varchar2, v_alert_pct number default 85, v_low_pct number default 80) as
 /*
   NAME
-    x5_add_data_files_prc - добавление файлов в табличное пространство (ТП)
+    add_data_files_prc - добавление файлов в табличное пространство (ТП)
   
   DESCRIPTION
    Процедура оценивает процент использования ТП и выводит рекомендации 
