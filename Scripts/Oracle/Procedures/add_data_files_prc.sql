@@ -16,7 +16,7 @@ create or replace procedure maint.add_data_files_prc (v_tbs in varchar2, v_alert
    Проверки:
             a.Цифры могут быть не только в конце имени файла, например arc1_data_137.dbf
             b.Цифры могут быть в пути до имени файла, например /appdata/data/ora451
-            c.Файл может не содержать цифр в имени, тогда последующий файл будет иметь имя <file_name>02.dbf
+            c.Файл может не содержать цифр в имени, тогда последующий файл будет иметь имя <file_name>_2.dbf
             d.ТП не является bigfile
             e.В БД не используются Oracle Managed Files (OMF)
             f.Подддержка ТП с размером блока 8192 и 16384
@@ -244,13 +244,13 @@ begin
                             when regexp_count(regexp_substr(lower(v_last_file_name), '\d+\.dbf'),'\d+') > 0  
                              then
                              regexp_replace(v_last_file_name, 
-                                            to_number(regexp_substr(regexp_substr(lower(v_last_file_name),
-                                                                                  '\d+\.dbf'), '\d+')),
-                                            to_number(regexp_substr(regexp_substr(lower(v_last_file_name),
-                                                                                  '\d+\.dbf'), '\d+')) + 1,
+                                            regexp_substr(regexp_substr(lower(v_last_file_name),
+                                                                                  '\d+\.dbf'), '\d+'),
+                                            regexp_substr(regexp_substr(lower(v_last_file_name),
+                                                                                  '\d+\.dbf'), '\d+') + 1,
                                             regexp_instr(lower(v_last_file_name),'\d+\.dbf'), 1, 'i')
                             else
-                             regexp_replace(v_last_file_name, '\.dbf', '02.dbf', 1, 1, 'i')
+                             regexp_replace(v_last_file_name, '\.dbf', '_2.dbf', 1, 1, 'i')
                           end;
       v_next_file_cmd := case
                            when regexp_count(regexp_substr(lower(v_last_file_name), '\d+\.dbf'),'\d+') > 0           
@@ -265,7 +265,7 @@ begin
                            else
                             'alter tablespace ' || upper(v_tbs) ||
                             ' add datafile ''' ||
-                            regexp_replace(v_last_file_name, '\.dbf', '02.dbf', 1, 1, 'i') ||
+                            regexp_replace(v_last_file_name, '\.dbf', '_2.dbf', 1, 1, 'i') ||
                             ''' size 1024m autoextend on next 256m maxsize unlimited;'
                          end;
       dbms_output.put_line(v_next_file_cmd);
