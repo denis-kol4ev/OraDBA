@@ -240,32 +240,59 @@ begin
     for i in 1 .. v_file_add loop
       v_ts_max_files := v_file_cnt + i;
       continue when v_ts_max_files > v_ts_max_files_limit;
+      
       v_next_file_name := case
                             when regexp_count(regexp_substr(lower(v_last_file_name), '\d+\.dbf'),'\d+') > 0  
                              then
-                             regexp_replace(v_last_file_name, 
+                               case
+                                 when v_last_file_digit < 9
+                                   then
+                                        regexp_replace(v_last_file_name, 
+                                            to_number(regexp_substr(regexp_substr(lower(v_last_file_name),
+                                                                                  '\d+\.dbf'), '\d+')),
+                                            to_number(regexp_substr(regexp_substr(lower(v_last_file_name),
+                                                                                  '\d+\.dbf'), '\d+')) + 1,
+                                            regexp_instr(lower(v_last_file_name),'\d+\.dbf'), 1, 'i')
+                                   else
+                                        regexp_replace(v_last_file_name, 
                                             regexp_substr(regexp_substr(lower(v_last_file_name),
                                                                                   '\d+\.dbf'), '\d+'),
                                             regexp_substr(regexp_substr(lower(v_last_file_name),
                                                                                   '\d+\.dbf'), '\d+') + 1,
                                             regexp_instr(lower(v_last_file_name),'\d+\.dbf'), 1, 'i')
+                              end           
                             else
-                             regexp_replace(v_last_file_name, '\.dbf', '_2.dbf', 1, 1, 'i')
-                          end;
+                             regexp_replace(v_last_file_name, '\.dbf', '02.dbf', 1, 1, 'i')
+                             end;
+
       v_next_file_cmd := case
                            when regexp_count(regexp_substr(lower(v_last_file_name), '\d+\.dbf'),'\d+') > 0           
-                             then 'alter tablespace ' || upper(v_tbs) || ' add datafile ''' ||
-                            regexp_replace(v_last_file_name,
+                             then 
+                               case
+                                 when v_last_file_digit < 9
+                                   then
+                                      'alter tablespace ' || upper(v_tbs) || ' add datafile ''' ||
+                                      regexp_replace(v_last_file_name,
+                                           to_number(regexp_substr(regexp_substr(lower(v_last_file_name),
+                                                                                 '\d+\.dbf'), '\d+')),
+                                           to_number(regexp_substr(regexp_substr(lower(v_last_file_name),
+                                                                                 '\d+\.dbf'), '\d+')) + 1,
+                                           regexp_instr(lower(v_last_file_name), '\d+\.dbf'), 1, 'i') ||
+                                           ''' size 1024m autoextend on next 256m maxsize unlimited;'      
+                                   else
+                                       'alter tablespace ' || upper(v_tbs) || ' add datafile ''' ||
+                                       regexp_replace(v_last_file_name,
                                            regexp_substr(regexp_substr(lower(v_last_file_name),
                                                                                  '\d+\.dbf'), '\d+'),
                                            regexp_substr(regexp_substr(lower(v_last_file_name),
                                                                                  '\d+\.dbf'), '\d+') + 1,
                                            regexp_instr(lower(v_last_file_name), '\d+\.dbf'), 1, 'i') ||
-                            ''' size 1024m autoextend on next 256m maxsize unlimited;'
+                                           ''' size 1024m autoextend on next 256m maxsize unlimited;'
+                               end 
                            else
                             'alter tablespace ' || upper(v_tbs) ||
                             ' add datafile ''' ||
-                            regexp_replace(v_last_file_name, '\.dbf', '_2.dbf', 1, 1, 'i') ||
+                            regexp_replace(v_last_file_name, '\.dbf', '02.dbf', 1, 1, 'i') ||
                             ''' size 1024m autoextend on next 256m maxsize unlimited;'
                          end;
       dbms_output.put_line(v_next_file_cmd);
