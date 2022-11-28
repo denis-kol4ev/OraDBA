@@ -365,6 +365,7 @@ begin
                       end;
       dbms_output.put_line(v_next_file_cmd);
       v_last_file_name := v_next_file_name;
+      v_last_file_digit := nvl(to_number(regexp_substr(regexp_substr(lower(v_next_file_name), '\d+\.dbf'), '\d+')), 0);
     end loop;
   end if;
 end add_data_files_prc;
