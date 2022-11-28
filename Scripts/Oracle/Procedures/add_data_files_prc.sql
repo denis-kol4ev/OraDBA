@@ -34,6 +34,9 @@ create or replace procedure maint.add_data_files_prc (v_tbs in varchar2, v_alert
             j.Наличие в ТП файлов с отключенным автораширением
             k.При добавлении в ТП файлов их количество не превысит 1023, 
               ORA-01686: max # files (1023) reached for the tablespace
+            l.Начальный размер и шаг авто расширения дабавляемого файла зависит от размера блока ТП.
+              Для блока 8k начальный размер 1024m шаг авто расширения 256m
+              Для блока 16k начальный размер 2048m шаг авто расширения 512m
   
   NOTES
    Входные параметры:
@@ -71,6 +74,8 @@ create or replace procedure maint.add_data_files_prc (v_tbs in varchar2, v_alert
   v_ts_max_files         number;
   v_ts_max_files_limit   number := 1023;
   v_zero_prefix number;
+  v_init_size varchar2(10);
+  v_autoext_size varchar2(10);
 
   procedure print_prc(p_label in varchar2, p_msg in varchar2) is
   begin
@@ -313,56 +318,20 @@ begin
                             else
                              regexp_replace(v_last_file_name, '\.dbf', '02.dbf', 1, 1, 'i')
                       end;
-
-      v_next_file_cmd := case
-                            when regexp_count(regexp_substr(lower(v_last_file_name), '\d+\.dbf'),'\d+') > 0
-                             then
-                               case
-                                 when v_zero_prefix = 1 and v_last_file_digit < 9
-                                   then
-                                        'alter tablespace ' || upper(v_tbs) || ' add datafile ''' ||
-                                        regexp_replace(v_last_file_name,
-                                            regexp_substr(regexp_substr(lower(v_last_file_name),
-                                                                                  '\d+\.dbf'), '\d+'),
-                                            '0' || to_char(regexp_substr(regexp_substr(lower(v_last_file_name),
-                                                                                  '\d+\.dbf'), '\d+') + 1),
-                                            regexp_instr(lower(v_last_file_name),'\d+\.dbf'), 1, 'i') ||
-                                            ''' size 1024m autoextend on next 256m maxsize unlimited;'
-                                  when v_zero_prefix = 2 and v_last_file_digit < 9
-                                   then
-                                        'alter tablespace ' || upper(v_tbs) || ' add datafile ''' ||
-                                        regexp_replace(v_last_file_name,
-                                            regexp_substr(regexp_substr(lower(v_last_file_name),
-                                                                                  '\d+\.dbf'), '\d+'),
-                                            '00' || to_char(regexp_substr(regexp_substr(lower(v_last_file_name),
-                                                                                  '\d+\.dbf'), '\d+') + 1),
-                                            regexp_instr(lower(v_last_file_name),'\d+\.dbf'), 1, 'i')  ||
-                                            ''' size 1024m autoextend on next 256m maxsize unlimited;'
-                                   when v_zero_prefix = 2 and v_last_file_digit < 99
-                                    then
-                                        'alter tablespace ' || upper(v_tbs) || ' add datafile ''' ||
-                                        regexp_replace(v_last_file_name,
-                                            regexp_substr(regexp_substr(lower(v_last_file_name),
-                                                                                  '\d+\.dbf'), '\d+'),
-                                            '0' || to_char(regexp_substr(regexp_substr(lower(v_last_file_name),
-                                                                                  '\d+\.dbf'), '\d+') + 1),
-                                            regexp_instr(lower(v_last_file_name),'\d+\.dbf'), 1, 'i') ||
-                                            ''' size 1024m autoextend on next 256m maxsize unlimited;'
-                                   else 
-                                        'alter tablespace ' || upper(v_tbs) || ' add datafile ''' ||
-                                        regexp_replace(v_last_file_name,
-                                            regexp_substr(regexp_substr(lower(v_last_file_name),
-                                                                                  '\d+\.dbf'), '\d+'),
-                                            regexp_substr(regexp_substr(lower(v_last_file_name),
-                                                                                  '\d+\.dbf'), '\d+') + 1,
-                                            regexp_instr(lower(v_last_file_name),'\d+\.dbf'), 1, 'i') ||
-                                            ''' size 1024m autoextend on next 256m maxsize unlimited;'
-                               end
-                            else
-                             'alter tablespace ' || upper(v_tbs) || ' add datafile ''' ||
-                             regexp_replace(v_last_file_name, '\.dbf', '02.dbf', 1, 1, 'i') ||
-                             ''' size 1024m autoextend on next 256m maxsize unlimited;'
-                      end;
+                       
+      v_init_size := case 
+                     when v_block_size = 8192 then '1024m'
+                     when v_block_size = 16384 then '2048m'
+                     end;
+      
+      v_autoext_size := case 
+                        when v_block_size = 8192 then '256m'
+                        when v_block_size = 16384 then '512m'
+                        end;
+                        
+      v_next_file_cmd := 'alter tablespace ' || upper(v_tbs) || ' add datafile ''' || v_next_file_name ||
+                         ''' size ' || v_init_size || ' autoextend on next ' || v_autoext_size || ' maxsize unlimited;';
+                                  
       dbms_output.put_line(v_next_file_cmd);
       v_last_file_name := v_next_file_name;
       v_last_file_digit := nvl(to_number(regexp_substr(regexp_substr(lower(v_next_file_name), '\d+\.dbf'), '\d+')), 0);
