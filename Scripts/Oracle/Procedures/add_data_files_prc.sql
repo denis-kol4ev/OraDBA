@@ -37,6 +37,8 @@ create or replace procedure maint.add_data_files_prc (v_tbs in varchar2, v_alert
             l.Начальный размер и шаг авто расширения дабавляемого файла зависит от размера блока ТП.
               Для блока 8k начальный размер 1024m шаг авто расширения 256m
               Для блока 16k начальный размер 2048m шаг авто расширения 512m
+            m.Имя файла должно содержать постфикс .dbf
+            n.ОС не относится к семейству Windows
   
   NOTES
    Входные параметры:
@@ -83,6 +85,12 @@ create or replace procedure maint.add_data_files_prc (v_tbs in varchar2, v_alert
   end;
 
 begin
+  if regexp_count(lower(dbms_utility.port_string), 'win_nt') = 1 then
+    raise_application_error(-20001,
+                            'Windows OS family ' || dbms_utility.port_string ||
+                            ' are not supported for this procedure');
+  end if;
+  
   select t.block_size
     into v_block_size
     from dba_tablespaces t
@@ -192,6 +200,12 @@ begin
              and value is null)
    order by to_number(regexp_substr(regexp_substr(lower(file_name), '\d+\.dbf'), '\d+'))
    desc nulls last fetch first row only;
+
+   if regexp_count(lower(v_last_file_name_short), '\.dbf$') = 0 then
+    raise_application_error(-20001,
+                            'Files like ' || v_last_file_name_short ||
+                            ' without .dbf postfix are not supported for this procedure');
+   end if;
 
   if v_ts_max_used_pct < v_alert_pct then
     print_prc('Tablespace name', v_tbs);
