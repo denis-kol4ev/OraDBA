@@ -1,5 +1,8 @@
+whenever oserror exit failure
 whenever sqlerror exit failure
-set heading off 
+connect <usr>/<pwd>@//<host>/<service>
+
+set heading off
 set pagesize 0
 set feedback off;
 set termout off;
@@ -15,3 +18,4 @@ select lower(t.host_name) host_name
  order by 1;
 
 spool off
+
