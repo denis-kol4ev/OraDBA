@@ -11,6 +11,11 @@ dbms_scheduler.drop_job('MAINT.PURGE_AND_STATS_JOB');
 end;
 
 -- Оптимизируем скорость запросов Zabbix к системным представлениям
+-- Queries on DBA_FREE_SPACE are Slow (Doc ID 271169.1)
+-- How to Gather Statistics on Objects Owned by the 'SYS' User and 'Fixed' Objects (Doc ID 457926.1)
+
+grant PURGE DBA_RECYCLEBIN, ANALYZE ANY DICTIONARY, ANALYZE ANY to maint;
+
 begin
   sys.dbms_scheduler.create_job(job_name        => 'MAINT.PURGE_AND_STATS_JOB',
                                 job_type        => 'PLSQL_BLOCK',
