@@ -1,3 +1,13 @@
+--Проверка наличия джобов со временем работы более 60 мин
+with t1 as
+ (select extract(day from(elapsed_time)) * 24 * 60 * 60 +
+         extract(hour from(elapsed_time)) * 60 * 60 +
+         extract(minute from(elapsed_time)) * 60 +
+         extract(second from(elapsed_time)) duration_sec
+    from dba_scheduler_running_jobs
+   where owner in ('MAINT', 'C##MAINT', 'SYS'))
+select count(*) as c from t1 where duration_sec > 3600;
+
 grant PURGE DBA_RECYCLEBIN to maint;
 grant PURGE DBA_RECYCLEBIN, ANALYZE ANY DICTIONARY, ANALYZE ANY to maint;
 begin
