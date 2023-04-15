@@ -57,3 +57,37 @@ begin
   end if;
 end;
 /
+
+-- Пример как избавиться от вложенных IF
+declare
+  v_city   varchar2(20) := 'Moscow';
+  v_street varchar2(20) := 'Voronina';
+  v_house  varchar2(20) := 10;
+begin
+  if v_city = 'Moscow' then
+    if v_street = 'Voronina' then
+      if v_house = 10 then
+        dbms_output.put_line('Adress is valid');
+      end if;
+    end if;
+  end if;
+end;
+/
+
+declare
+  v_city   varchar2(20) := 'Moscow';
+  v_street varchar2(20) := 'Voronina';
+  v_house  varchar2(20) := 10;
+begin
+  if v_city != 'Moscow' then
+    return;
+  end if;
+  if v_street != 'Voronina' then
+    return;
+  end if;
+  if v_house != 10 then
+    return;
+  end if;
+  dbms_output.put_line('Adress is valid');
+end;
+/
