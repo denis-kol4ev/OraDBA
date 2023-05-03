@@ -26,7 +26,7 @@ create or replace procedure maint.get_asm_usage_prc as
   l_host             varchar2(50);
   procedure print_prc(p_label in varchar2, p_msg in varchar2) is
   begin
-    dbms_output.put_line(rpad(p_label, 45, '.') || p_msg);
+    dbms_output.put_line(rpad(to_nchar(p_label), 45, '.') || p_msg);
   end;
 
   procedure print_clob(p_clob in clob) as
