@@ -34,8 +34,8 @@ create or replace procedure maint.get_asm_usage_prc as
   begin
     loop
       exit when l_offset > dbms_lob.getlength(p_clob);
-      dbms_output.put_line(dbms_lob.substr(p_clob, 255, l_offset));
-      l_offset := l_offset + 255;
+      dbms_output.put_line(dbms_lob.substr(p_clob, 512, l_offset));
+      l_offset := l_offset + 512;
     end loop;
   end;
 
