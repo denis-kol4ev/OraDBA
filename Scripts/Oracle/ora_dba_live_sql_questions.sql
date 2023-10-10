@@ -3,6 +3,12 @@
 ==================
     Вопросы
 ==================
+-- Выпрос №4
+-- Выведете топ три заказа (по сумме) для каждого клиента.
+-- Используйте таблицы ORDERS,ORDER_ITEM схемы CO
+-- Итоговый набор полей: 
+-- клиент (customer_id), заказ (order_id), сумма_заказа (order_total)
+
 -- Вопрос №1
 -- Используя таблицу EMPLOYEES схемы HR найдите топ три зарплаты в комапании.
 
@@ -60,6 +66,17 @@ select * from hr.employees e where salary=(select max(salary) from hr.employees 
 -- Вопрос №3
 -- Используя таблицу hr.employees выведете сотрудников с чётным порядковым номером (employee_id)
 select * from hr.employees e where mod(employee_id, 2) = 0;
+
+-- Выпрос №4
+-- Выведете топ три заказа (по сумме) для каждого клиента.
+-- Используйте таблицы ORDERS,ORDER_ITEM схемы CO
+-- Итоговый набор полей: 
+-- клиент (customer_id), заказ (order_id), сумма_заказа (order_total)
+    with t (customer_id, order_id, order_total, rn) as (
+select o.customer_id, o.order_id, sum(oi.unit_price * oi.quantity) as order_total, row_number() over (partition by o.customer_id order by sum(oi.unit_price * oi.quantity) desc) as rn
+    from co.orders o join co.order_items oi on o.order_id=oi.order_id
+    group by o.customer_id, o.order_id)
+    select * from t where rn <= 3 order by customer_id;
 
 -- Вопрос №4
 -- Выведете все заказы сделанные в Лондоне с суммой заказа больше 100.
