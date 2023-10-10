@@ -4,7 +4,7 @@
     Вопросы
 ==================
 -- Выпрос №1 
--- Используя таблицы CUSTOMERS и ORDERS схемы CO выведите всех клиентов которые не имеют заказов.
+-- Используя таблицы CUSTOMERS и ORDERS схемы OE выведите всех клиентов которые не имеют заказов.
 
 -- Выпрос №1 
 -- Используя таблицу hr.employees найдите всторую самую высокую зарплату сотрудника
@@ -25,8 +25,8 @@
     Ответы
 ==================
 -- Выпрос №1 
--- Используя таблицы CUSTOMERS и ORDERS схемы CO выведите всех клиентов которые не имеют заказов.
-select * from co.customers c where not exists (select 1 from co.orders o where o.customer_id = c.customer_id); 
+-- Используя таблицы CUSTOMERS и ORDERS схемы OE выведите всех клиентов которые не имеют заказов.
+select * from oe.customers c where not exists (select 1 from oe.orders o where o.customer_id = c.customer_id); 
 
 -- Выпрос №1 
 -- Используя таблицу hr.employees найдите всторую самую высокую зарплату сотрудника
