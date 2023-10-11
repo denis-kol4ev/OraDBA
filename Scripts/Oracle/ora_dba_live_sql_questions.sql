@@ -4,7 +4,8 @@
     Вопросы
 ==================
 -- Вопрос №1
--- Используя таблицу EMPLOYEES схемы HR найдите топ три зарплаты в комапании.
+-- Используя таблицу EMPLOYEES схемы HR найдите топ три зарплаты в комапании
+-- с сортрировкой от большего к меньшему. 
 
 -- Вопрос №2
 -- Используя таблицы EMP и DEPT схемы SCOTT выведите информацию по всем департаментам и их служащим.
@@ -36,7 +37,8 @@
     Ответы
 ==================
 -- Вопрос №1
--- Используя таблицу EMPLOYEES схемы HR найдите топ три зарплаты в комапании.
+-- Используя таблицу EMPLOYEES схемы HR найдите топ три зарплаты в комапании
+-- с сортрировкой от большего к меньшему.  
 select distinct(salary) from hr.employees e order by salary desc fetch first 3 rows only;
 
 -- Вопрос №2
@@ -49,6 +51,7 @@ select * from oe.customers c where not exists (select 1 from oe.orders o where o
 
 -- Вопрос №4
 -- Используя таблицу EMPLOYEES схемы HR найдите самых высокооплачиваемых сотрудников в каждом департаменте
+-- с сортрировкой по department_id от меньшего к большему. 
 -- вариант 1
 select * from hr.employees e where (department_id, salary) in (select department_id, max(salary) as salary from hr.employees group by department_id) order by department_id;
 -- вариант 2
