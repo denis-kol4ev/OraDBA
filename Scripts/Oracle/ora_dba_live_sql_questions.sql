@@ -33,7 +33,7 @@
 Используя таблицы EMP и DEPT схемы SCOTT выведите информацию по всем департаментам и их служащим.
 */
 select * from scott.dept left join scott.emp using(deptno);
-
+select * from scott.dept d, scott.emp e where d.deptno=e.deptno(+);
 /*
 Вопрос №2
 Используя таблицы CUSTOMERS и ORDERS схемы OE выведите всех клиентов которые не имеют заказов.
