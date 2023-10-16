@@ -8,7 +8,7 @@
 Используя таблицы EMP и DEPT схемы SCOTT выведите информацию по всем департаментам и их служащим.
 
 Вопрос №2
-Используя таблицы CUSTOMERS и ORDERS схемы OE выведите всех клиентов которые не имеют заказов.
+Используя таблицы CUSTOMERS и ORDERS схемы OE выведите общее количество клиентов которые не имеют заказов.
 
 Вопрос №3
 Используя таблицу EMPLOYEES схемы HR найдите самых высокооплачиваемых сотрудников в каждом департаменте
@@ -39,9 +39,12 @@ select * from scott.dept d, scott.emp e where d.deptno=e.deptno(+);
 
 /*
 Вопрос №2
-Используя таблицы CUSTOMERS и ORDERS схемы OE выведите всех клиентов которые не имеют заказов.
+Используя таблицы CUSTOMERS и ORDERS схемы OE выведите общее количество клиентов которые не имеют заказов.
 */
-select * from oe.customers c where not exists (select 1 from oe.orders o where o.customer_id = c.customer_id); 
+-- вариант 1
+select count(*) from oe.customers c where not exists (select 1 from oe.orders o where o.customer_id = c.customer_id); 
+-- вариант 2
+select count(*) from oe.customers c where customer_id not in (select distinct customer_id from oe.orders); 
 
 /*
 Вопрос №3
