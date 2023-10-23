@@ -11,8 +11,8 @@ set term on
 spool db_run_sql.log append
 prompt &vHostDate
 
-alter table SCOTT.DEPARTMENTS move online parallel 8 tablespace SCOTT_TS;
-
+-- this is where the payload is located
+  
 spool off
 set term off
 column c new_value vHostDate
