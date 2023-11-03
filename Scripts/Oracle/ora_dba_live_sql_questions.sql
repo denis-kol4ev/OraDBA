@@ -23,6 +23,9 @@
 Итоговый набор полей: 
 клиент (customer_id), заказ (order_id), сумма_заказа (order_total)
 сортрировка по customer_id от меньшего к большему
+
+Вопрос №6
+Используя таблицу ORDERS схемы OE выведите клиентов которые сделали повторный заказ в течении 30 дней или меньше.    
 */
 
 ==================
@@ -75,3 +78,11 @@ select o.customer_id, o.order_id, sum(oi.unit_price * oi.quantity) as order_tota
     from co.orders o join co.order_items oi on o.order_id=oi.order_id
     group by o.customer_id, o.order_id)
     select * from t where rn <= 3 order by customer_id;
+
+/*
+Вопрос №6
+Используя таблицу ORDERS схемы OE выведите клиентов которые сделали повторный заказ в течении 30 дней или меньше.
+*/
+select * from 
+(select customer_id, order_date, lag(order_date) over (partition by customer_id order by order_date asc) as prev_order_date from oe.orders) a
+    where extract(day from order_date - prev_order_date) <=30;
