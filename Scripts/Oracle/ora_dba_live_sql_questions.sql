@@ -26,6 +26,9 @@
 
 Вопрос №6
 Используя таблицу ORDERS схемы OE выведите клиентов которые сделали повторный заказ в течении 30 дней или меньше.    
+Итоговый набор полей: 
+клиент (customer_id), дата заказа (order_date), дата предыдущего заказа (prev_order_date)
+сортрировка по customer_id от меньшего к большему
 */
 
 ==================
@@ -81,8 +84,11 @@ select o.customer_id, o.order_id, sum(oi.unit_price * oi.quantity) as order_tota
 
 /*
 Вопрос №6
-Используя таблицу ORDERS схемы OE выведите клиентов которые сделали повторный заказ в течении 30 дней или меньше.
+Используя таблицу ORDERS схемы OE выведите клиентов которые сделали повторный заказ в течении 30 дней или меньше.    
+Итоговый набор полей: 
+клиент (customer_id), дата заказа (order_date), дата предыдущего заказа (prev_order_date)
+сортрировка по customer_id от меньшего к большему
 */
 select * from 
-(select customer_id, order_date, lag(order_date) over (partition by customer_id order by order_date asc) as prev_order_date from oe.orders) a
-    where extract(day from order_date - prev_order_date) <=30;
+(select customer_id, order_date, lag(order_date) over (partition by customer_id order by order_date asc) as prev_order_date from oe.orders)
+    where extract(day from order_date - prev_order_date) <=30 order by customer_id;
