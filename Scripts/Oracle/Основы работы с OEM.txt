@@ -119,7 +119,11 @@ select *
 
 alter system flush shared_pool;
 
-Запускаем perf_test.sh и идём в ASH analytics где видим наш запрос и 5-ть сессий его выполняющих
+Запускаем perf_test.sh 
+./perf_test.sh angel19
+ps -ef | grep perf_test | grep -v grep
+
+Идём в ASH analytics где видим наш запрос и 5-ть сессий его выполняющих
 Кликнув на sql_id переходим к статистикам выполнения, отсюда можно запланировать тюнинг 
 Статистики удобно смотреть выполнив поиск по sql_id в Search SQL
 Полезные вкладки Statistic и Activity, тут так же можно вызвать тюнинг Tuninig Advisor и ASH report 
