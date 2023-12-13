@@ -24,7 +24,7 @@ OEM
 Практика 1 - Блокировка сессий (Blocking Sessions)
 
 drop user test_usr cascade;
-create user test_usr identified by "Zz123456#Qwerty";
+create user test_usr identified by Zz123456;
 alter user test_usr quota unlimited on users;
 grant create session to test_usr;
 
