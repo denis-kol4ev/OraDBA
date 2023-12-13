@@ -1,0 +1,139 @@
+OEM 
+
+1. Обзор архитектуры
+
+2. Функционал для ежедневной работы
+
+С чего я начинаю, поиск таргета хоста и просмотр состояния всех таргетов на нем.
+Рассмотрим вкладки по порядку, расскажу лишь о том чем пользуюсь в ежедневной работе и не все что тут есть удобно делать в браузере, но посотреть наглядно это можно, редактирование и обновление - лучше скриптами.
+
+1. Просмотр всех таргетов на хосте
+   Oracle Database => Target Setup => Properties
+2. Метрики по хосту класса Load 
+3. Размер БД и табличных пространств - Administaration => Storage => Tablespaces
+   Oracle Database => Monitoring => All Metrics , смотрим метрики Database Size , Tablespace Full 
+4. Утилизация табличных пространств
+5. Информация по дисковым группам - Administaration => Disk Groups 
+6. Параметры инициализации экземпляра - Administaration => Initialization Parameters , отсюда их можно быстро сохранить в файл
+7. Информация о пользователях, ролях и профилях - Security => Users , посомтреть текущие права и сделать DDL для клона пользователя
+8. Информация о Data Guard - Availability => Data Guard Perfomance / Verify Data Guard Configuration
+9. Incident Manager
+
+3. Базовые вопросы анализа производительности
+
+Практика 1 - Блокировка сессий (Blocking Sessions)
+
+drop user test_usr cascade;
+create user test_usr identified by Zz123456;
+alter user test_usr quota unlimited on users;
+grant create session to test_usr;
+
+create table test_usr.t1(c1 number, c2 varchar2(10));
+
+begin
+  for i in 1 .. 10 loop
+    insert into test_usr.t1 values (i, dbms_random.string('L', 10));
+  end loop;
+  commit;
+end;
+/
+
+Сессия 1
+sqlplus test_usr/Zz123456@angel19
+update test_usr.t1 set c2='aaa' where c1=10;
+
+Сессия 2
+sqlplus test_usr/Zz123456@angel19
+update test_usr.t1 set c2='bbb' where c1=10;
+
+Смотрим инфо о блокировке в Perfomance => Blocking Sessions 
+
+Видим что вторая сессия заблокирована с ождинаием enq: TX - row lock contention - ожидание блокировки строки.
+
+Сессия 1
+rollback;
+
+проверяем отсутствие блокировки
+
+Сессия 2
+может подтвердить или откатить свою транзакцию 
+commit;
+
+Сессия 1
+видит данные внесенные сессией 2 после комита
+select c2 from test_usr.t1 where c1=10;
+
+Что важно: 
+- kill сессий выполнять только по согласованию с командой проекта , часто бывает что разработчик внес изменения и не выдал commit, как в нашем случае
+- имеет смысл обращать на блокировки в обращениях когда какой-то функционал перестал работать но при этом нет ошибок в алерт логе и нет нагрузки на сервере (низакая загрузка cpu, не высокий i/o, присутсствует свободная ram)  
+- в реально нагруженной БД сессий и блокировок может быть очень много, и если блокировок много, это может быть проблема с логикой приложения, т.е. попытки изменять одновременно одни и теже данные 
+
+Практика 2 - Тюнинг запроса (Tuning Advisor)
+
+create table test_usr.big_table (idc NUMBER GENERATED ALWAYS AS IDENTITY,
+   owner varchar2(100),
+   object_name varchar2(200),
+   object_id number,
+   object_type varchar2(100),
+   created date,
+   last_ddl_time date,
+   status varchar2(100));
+
+declare
+n number := 1;
+begin
+  loop
+    exit when n = 5;
+insert into test_usr.big_table (owner, object_name, object_id, object_type, created, last_ddl_time, status) (select owner, object_name, object_id, object_type, created, last_ddl_time, status
+ from dba_objects);
+commit;
+n := n +1;
+end loop;
+end;
+
+select count(*) from test_usr.big_table;
+select * from test_usr.big_table order by idc fetch first 100 rows only;
+
+declare
+v1 number;
+v2 number;
+v_sql varchar2(500);
+begin
+  for i in 1 .. 10 loop
+  v1 := round(dbms_random.value(1, 100));
+v_sql := 'select idc from test_usr.big_table where idc = :v1';
+execute immediate v_sql into v2 using v1;
+dbms_output.put_line(v2);
+    end loop;
+EXCEPTION
+  WHEN no_data_found THEN
+    dbms_output.put_line('exc ' || v1);
+end;
+
+select *
+  from v$sql s
+ where s.SQL_TEXT = 'select idc from test_usr.big_table where idc = :v1';
+
+alter system flush shared_pool;
+
+Запускаем perf_test.sh и идём в ASH analytics где видим наш запрос и 5-ть сессий его выполняющих
+Кликнув на sql_id переходим к статистикам выполнения, отсюда можно запланировать тюнинг 
+Статистики удобно смотреть выполнив поиск по sql_id в Search SQL
+Полезные вкладки Statistic и Activity, тут так же можно вызвать тюнинг Tuninig Advisor и ASH report 
+Вызываем сначала ASH report , а затем Tuninig Advisor
+По результатам тюнинга видим очевидную рекомендацию посторить индекс
+Cравниваем планы и видим на сколько дешевле стал cost
+Рекомендации по индексу передаем разработчикам
+
+Что еще полезного по Perfomance
+Perfomance => Perfomance Home тут можно вызвать ADDM и ASH отчеты 
+Perfomance => AWR Report
+
+4. Вопросы от 2-й линии:
+1. Как посмотреть нагрузку на БД  - в общем случае это Perfomance Hub
+2. Как посмотреть план запроса - Perfomance => SQL => Search SQL
+3. Как выполнить тюнинг запроса - есть инструкция https://wiki.x5.ru/display/DB/SQL+Tuning , плюс отдельно расссмативалось в текущем workshop
+4. Как посмотреть пользователей, которые занимают больше всего ресурсов - ASH Analytics => Top Dimensions => User Session 
+5. Как выгрузить список упавших/поднятых хостов при/после аварии - Targets => Hostsальтернативный вариант - запросом к БД СС
+6. Как узнать, кто стендбай/праймари - Availability => Data Guard Administration
+7. Как проверить доступность листнера/статус БД/uptime БД - выбрать хост, Related targets
