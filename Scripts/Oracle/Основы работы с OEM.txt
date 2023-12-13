@@ -142,3 +142,41 @@ ps -ef | grep perf_test | grep -v grep
 5. Как выгрузить список упавших/поднятых хостов при/после аварии - Targets => Hosts альтернативный вариант - запросом к БД СС
 6. Как узнать, кто стендбай/праймари - Availability => Data Guard Administration
 7. Как проверить доступность листнера/статус БД/uptime БД - выбрать хост, Related targets
+
+Дополнение к вопросу №5
+-- Недоступные БД v2
+select t.host_name,
+       c.target_name,
+       c.type_display_name,
+       c.availability_status,
+       c.start_timestamp
+  from sysman.MGMT$AVAILABILITY_CURRENT c
+  left join sysman.mgmt$target t
+    on c.target_guid = t.target_guid
+ where c.availability_status != 'Target Up'
+   and exists (select 1
+          from sysman.GC$GLOBAL_TARGET_PROPERTIES tp
+         where target_type in
+               ('oracle_database', 'rac_database', 'oracle_pdb')
+           and c.target_guid = tp.target_guid)
+ order by c.availability_status;
+
+-- Недоступные хосты, агенты, листнеры, БД, ASM
+select t.host_name,
+       c.target_name,
+       c.type_display_name,
+       c.availability_status,
+       c.start_timestamp
+  from sysman.MGMT$AVAILABILITY_CURRENT c
+  left join sysman.mgmt$target t
+    on c.target_guid = t.target_guid
+ where c.availability_status != 'Target Up'
+   and c.target_type in ('oracle_database',
+                         'rac_database',
+                         'oracle_pdb',
+                         'osm_instance',
+                         'host',
+                         'oracle_emd',
+                         'oracle_listener')
+ order by c.availability_status, c.target_type;
+
