@@ -140,7 +140,7 @@ Perfomance => AWR Report
 1. Как посмотреть нагрузку на БД  - в общем случае это Perfomance Hub
 2. Как посмотреть план запроса - Perfomance => SQL => Search SQL
 3. Как выполнить тюнинг запроса - есть инструкция https://wiki.x5.ru/display/DB/SQL+Tuning , плюс отдельно расссмативалось в текущем workshop
-4. Как посмотреть пользователей, которые занимают больше всего ресурсов - ASH Analytics => Top Dimensions => User Session 
+4. Как посмотреть пользователей, которые занимают больше всего ресурсов - ASH Analytics => Top Dimensions => User Session , но лучше запустить ADDM
 5. Как выгрузить список упавших/поднятых хостов при/после аварии - Targets => Hostsальтернативный вариант - запросом к БД СС
 6. Как узнать, кто стендбай/праймари - Availability => Data Guard Administration
 7. Как проверить доступность листнера/статус БД/uptime БД - выбрать хост, Related targets
