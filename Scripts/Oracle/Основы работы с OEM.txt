@@ -123,7 +123,10 @@ alter system flush shared_pool;
 ./perf_test.sh angel19
 ps -ef | grep perf_test | grep -v grep
 
-Идём в ASH analytics где видим наш запрос и 5-ть сессий его выполняющих
+1. Идём в ASH analytics где видим наш запрос и 5-ть сессий его выполняющих
+2. Идём в Perfomance Home и строим отчеты ADDM, затем ASH  
+3. Упомянуть про отчеты AWR и пояснить разницу когда стоит смотреть AWR, а когда ASH
+
 Кликнув на sql_id переходим к статистикам выполнения, отсюда можно запланировать тюнинг 
 Статистики удобно смотреть выполнив поиск по sql_id в Search SQL
 Полезные вкладки Statistic и Activity, тут так же можно вызвать тюнинг Tuninig Advisor и ASH report 
