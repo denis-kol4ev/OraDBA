@@ -10,14 +10,15 @@ OEM
 1. Просмотр всех таргетов на хосте
    Oracle Database => Target Setup => Properties
 2. Метрики по хосту класса Load 
-3. Размер БД и табличных пространств - Administaration => Storage => Tablespaces
+3. Информация по файловым системам
+4. Размер БД и табличных пространств - Administaration => Storage => Tablespaces
    Oracle Database => Monitoring => All Metrics , смотрим метрики Database Size , Tablespace Full 
-4. Утилизация табличных пространств
-5. Информация по дисковым группам - Administaration => Disk Groups 
-6. Параметры инициализации экземпляра - Administaration => Initialization Parameters , отсюда их можно быстро сохранить в файл
-7. Информация о пользователях, ролях и профилях - Security => Users , посомтреть текущие права и сделать DDL для клона пользователя
-8. Информация о Data Guard - Availability => Data Guard Perfomance / Verify Data Guard Configuration
-9. Incident Manager
+5. Утилизация табличных пространств
+6. Информация по дисковым группам - Administaration => Disk Groups 
+7. Параметры инициализации экземпляра - Administaration => Initialization Parameters , отсюда их можно быстро сохранить в файл
+8. Информация о пользователях, ролях и профилях - Security => Users , посомтреть текущие права и сделать DDL для клона пользователя
+9. Информация о Data Guard - Availability => Data Guard Perfomance / Verify Data Guard Configuration
+10. Incident Manager
 
 3. Базовые вопросы анализа производительности
 
