@@ -9,3 +9,23 @@
             Kernel: Linux 4.18.0-408.el8.x86_64
       Architecture: x86-64
 ====================================================
+   Static hostname: zabbix6
+         Icon name: computer-vm
+           Chassis: vm
+        Machine ID: b41e081ce9d740c3beb071c09fd8b5c9
+           Boot ID: c98e0df97bc346eb928e255f5698d1f4
+    Virtualization: vmware
+  Operating System: CentOS Stream 8
+       CPE OS Name: cpe:/o:centos:centos:8
+            Kernel: Linux 4.18.0-408.el8.x86_64
+      Architecture: x86-64
+   Static hostname: zabbix6
+         Icon name: computer-vm
+           Chassis: vm
+        Machine ID: b41e081ce9d740c3beb071c09fd8b5c9
+           Boot ID: c98e0df97bc346eb928e255f5698d1f4
+    Virtualization: vmware
+  Operating System: CentOS Stream 8
+       CPE OS Name: cpe:/o:centos:centos:8
+            Kernel: Linux 4.18.0-408.el8.x86_64
+      Architecture: x86-64
