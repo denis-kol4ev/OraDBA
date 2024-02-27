@@ -1,2 +1,1 @@
-aaaaaaaaaaaaaaaaa
-sssssssssssssss
+zabbix6
