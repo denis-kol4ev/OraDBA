@@ -1,6 +1,19 @@
 -- Collections and Records
 
+-- Cursor-based record
+-- record_name cursor_name%ROWTYPE;
+DECLARE
+    CURSOR c_contacts IS
+        SELECT first_name, last_name, phone
+        FROM contacts;
+    r_contact c_contacts%ROWTYPE;
+
+-- Programmer-defined record
+-- TYPE record_type IS RECORD
+
 -- Table-based record
+-- record_name table_name%ROWTYPE;
+
 DECLARE
   v_countryid      varchar2(20) := 'CA';
   v_country_record countries%ROWTYPE;
