@@ -1,5 +1,12 @@
 -- Collections and Records
 
+-- Three types of collections
+-- Nested Tables
+-- Associative array
+-- Varray    
+
+
+
 -- Cursor-based record
 -- record_name cursor_name%ROWTYPE;
 DECLARE
