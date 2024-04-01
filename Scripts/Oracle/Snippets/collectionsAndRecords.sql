@@ -47,6 +47,29 @@ BEGIN
 END;
 /
 
+DECLARE
+  TYPE nested_type IS TABLE OF VARCHAR2(20);
+  v1 nested_type := nested_type();
+BEGIN
+  v1.extend();
+  v1(v1.last) := 'A';
+
+  v1.extend();
+  v1(v1.last) := 'B';
+
+  v1.extend();
+  v1(v1.last) := 'C';
+
+  for i in v1.first .. v1.last loop
+    dbms_output.put_line(v1(i));
+  end loop;
+
+  for i in 1 .. v1.count loop
+    dbms_output.put_line(v1(i));
+  end loop;
+END;
+/
+
 -- Associative array
 DECLARE
   TYPE assoc_array_num_type IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
