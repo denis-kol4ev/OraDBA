@@ -1,6 +1,6 @@
 -- Collections and Records
 
--- Record usage example
+-- Table-based record
 DECLARE
   v_countryid      varchar2(20) := 'CA';
   v_country_record countries%ROWTYPE;
