@@ -176,7 +176,7 @@ begin
 end;
 /
 
--- Record with associative array collection
+-- Record with associative array collection (index by pls_integer)
 declare
   type t_rec is record(user varchar2(30), host varchar2(30), port number);
   type t_rec_type is table of t_rec index by pls_integer;
@@ -204,6 +204,33 @@ begin
 end;
 /
 
+-- Record with associative array collection (index by varchar2)
+declare
+  type t_rec is record(user varchar2(30), host varchar2(30), port number);
+  type t_rec_type is table of t_rec index by varchar2(64);
+  v1 t_rec_type := t_rec_type();
+  v_idx varchar(20);
+begin
+  v1('DC1').user := 'sap_dev';
+  v1('DC1').host := 'server-dev';
+  v1('DC1').port := 1521;
+
+  v1('DC2').user := 'sap_test';
+  v1('DC2').host := 'server-test';
+  v1('DC2').port := 1521;
+
+  v1('DC3').user := 'sap_prod';
+  v1('DC3').host := 'server-prod';
+  v1('DC3').port := 1521;
+
+  v_idx := v1.first;
+  while (v_idx is not null) loop
+    dbms_output.put_line(v_idx || ': ' || v1(v_idx).user || ' ' || v1(v_idx).host || ' ' || v1(v_idx).port);
+    v_idx := v1.next(v_idx);
+  end loop;
+end;
+/
+   
 -- Table-based record
 -- record_name table_name%ROWTYPE;
 
