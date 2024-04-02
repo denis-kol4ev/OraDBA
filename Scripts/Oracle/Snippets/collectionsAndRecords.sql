@@ -96,13 +96,13 @@ BEGIN
     dbms_output.put_line(v2(i));
   end loop;
 
-  v3('Ottawa') := 'Canada';
-  v3('Washington') := 'USA';
-  v3('Moscow') := 'Russia';
+  v3('Canada') := 'Ottawa';
+  v3('USA') := 'Washington';
+  v3('Russia') := 'Moscow';
 
   v_idx := v3.first;
   while (v_idx is not null) loop
-    dbms_output.put_line(v3(v_idx));
+    dbms_output.put_line('The capital of ' || v_idx || ' is ' || v3(v_idx));
     v_idx := v3.next(v_idx);
   end loop;
 END;
