@@ -70,7 +70,7 @@ BEGIN
 END;
 /
 
--- Associative array
+-- Associative array example 1
 DECLARE
   TYPE assoc_array_num_type IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
   TYPE assoc_array_str_type IS TABLE OF VARCHAR2(32) INDEX BY PLS_INTEGER;
@@ -105,6 +105,26 @@ BEGIN
     dbms_output.put_line('The capital of ' || v_idx || ' is ' || v3(v_idx));
     v_idx := v3.next(v_idx);
   end loop;
+END;
+/
+
+-- Associative array example 2
+DECLARE
+  TYPE dept_table_type is table of departments.department_name%TYPE INDEX BY PLS_INTEGER;
+  my_dept_table dept_table_type;
+  f_loop_count  NUMBER(2) := 10;
+  v_deptno      NUMBER(4) := 0;
+BEGIN
+  FOR i IN 1 .. f_loop_count LOOP
+    v_deptno := v_deptno + 10;
+    SELECT department_name
+      INTO my_dept_table(i)
+      FROM departments
+     WHERE department_id = v_deptno;
+  END LOOP;
+  FOR i IN 1 .. f_loop_count LOOP
+    DBMS_OUTPUT.PUT_LINE(my_dept_table(i));
+  END LOOP;
 END;
 /
 
@@ -250,27 +270,7 @@ BEGIN
 END;
 /
 
--- Associative array usage example 1
-DECLARE
-  TYPE dept_table_type is table of departments.department_name%TYPE INDEX BY PLS_INTEGER;
-  my_dept_table dept_table_type;
-  f_loop_count  NUMBER(2) := 10;
-  v_deptno      NUMBER(4) := 0;
-BEGIN
-  FOR i IN 1 .. f_loop_count LOOP
-    v_deptno := v_deptno + 10;
-    SELECT department_name
-      INTO my_dept_table(i)
-      FROM departments
-     WHERE department_id = v_deptno;
-  END LOOP;
-  FOR i IN 1 .. f_loop_count LOOP
-    DBMS_OUTPUT.PUT_LINE(my_dept_table(i));
-  END LOOP;
-END;
-/
-
--- Associative array usage example 2
+-- Record with associative array
 DECLARE
   TYPE dept_table_type is table of departments%ROWTYPE INDEX BY PLS_INTEGER;
   my_dept_table dept_table_type;
