@@ -270,7 +270,7 @@ BEGIN
 END;
 /
 
--- Record with associative array
+-- Table-based record with associative array
 DECLARE
   TYPE dept_table_type is table of departments%ROWTYPE INDEX BY PLS_INTEGER;
   my_dept_table dept_table_type;
