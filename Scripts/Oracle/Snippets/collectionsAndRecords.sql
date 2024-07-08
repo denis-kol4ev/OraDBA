@@ -292,3 +292,15 @@ BEGIN
   END LOOP;
 END;
 /
+
+-- Table-based record with associative array and bulk collect
+declare
+  type dba_users_table_type is table of dba_users%rowtype index by pls_integer;
+  v_dba_users_table dba_users_table_type;
+begin
+  select * bulk collect into v_dba_users_table from dba_users;
+  for i in v_dba_users_table.first .. v_dba_users_table.last loop
+    dbms_output.put_line(v_dba_users_table(i).username || ' ' || v_dba_users_table(i).last_login);
+  end loop;
+end;
+/
