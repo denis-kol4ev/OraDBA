@@ -304,3 +304,38 @@ begin
   end loop;
 end;
 /
+
+-- Determing members of collection: member of  / not member of
+DECLARE
+  TYPE user_type IS TABLE OF dba_users.username%type;
+  v_system_users user_type := user_type('SYS', 'SYSTEM', 'DBSNMP');
+  v_all_users    user_type;
+BEGIN
+  select username bulk collect into v_all_users from dba_users;
+  for i in v_all_users.first .. v_all_users.last loop
+    if v_all_users(i) member of v_system_users then
+      dbms_output.put_line(v_all_users(i));
+    end if;
+  end loop;
+END;
+/
+
+DECLARE
+  TYPE user_rec is record(
+    user_id  dba_users.user_id%type,
+    username dba_users.username%type);
+  TYPE user_rec_type IS TABLE OF user_rec;
+  v_all_users user_rec_type;
+
+  TYPE sys_user_type IS TABLE OF dba_users.username%type;
+  v_sys_users sys_user_type := sys_user_type('SYS', 'SYSTEM', 'DBSNMP');
+
+BEGIN
+  select user_id, username bulk collect into v_all_users from dba_users;
+  for i in v_all_users.first .. v_all_users.last loop
+    if v_all_users(i).username member of v_sys_users then
+      dbms_output.put_line(v_all_users(i).user_id);
+    end if;
+  end loop;
+END;
+/
