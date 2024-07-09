@@ -1,5 +1,8 @@
 -- Collections and Records
-
+-- 1. Collections
+-- 2. Records
+-- 3. Operations on Collections
+   
 -- 1. Collections 
 -- Three types of collections
 -- Nested Tables
@@ -305,7 +308,8 @@ begin
 end;
 /
 
--- Determing members of collection: member of  / not member of
+-- 3. Operations on Collections
+-- 3.1 Determing members of collection: member of  / not member of
 DECLARE
   TYPE user_type IS TABLE OF dba_users.username%type;
   v_system_users user_type := user_type('SYS', 'SYSTEM', 'DBSNMP');
