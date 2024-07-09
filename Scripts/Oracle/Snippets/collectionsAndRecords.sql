@@ -310,6 +310,22 @@ end;
 
 -- 3. Operations on Collections
 -- 3.1 Determing members of collection: member of  / not member of
+declare
+  type user_type is table of dba_users.username%type;
+  v_system_users user_type := user_type('SYS', 'SYSTEM', 'DBSNMP');
+begin
+  for i in (select user_id, username from dba_users)
+  
+   loop
+    if i.username not member of v_system_users then
+      null;
+    else
+      dbms_output.put_line(i.user_id);
+    end if;
+  end loop;
+end;
+/
+
 DECLARE
   TYPE user_type IS TABLE OF dba_users.username%type;
   v_system_users user_type := user_type('SYS', 'SYSTEM', 'DBSNMP');
