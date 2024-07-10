@@ -156,11 +156,21 @@ END;
 -- 2. Records 
 -- Cursor-based record
 -- record_name cursor_name%ROWTYPE;
-DECLARE
-    CURSOR c_contacts IS
-        SELECT first_name, last_name, phone
-        FROM contacts;
-    r_contact c_contacts%ROWTYPE;
+declare
+  cursor c_users is
+    select u.user_id, u.username, u.last_login from dba_users u;
+  r_users c_users%rowtype;
+begin
+  open c_users;
+  loop
+    fetch c_users
+      into r_users;
+    exit when c_users%notfound;
+    if r_users.last_login is not null then
+      dbms_output.put_line(r_users.username || '   ' || r_users.last_login);
+    end if;
+  end loop;
+end;
 
 -- Programmer-defined record
 -- TYPE record_type IS RECORD
@@ -314,12 +324,8 @@ declare
   type user_type is table of dba_users.username%type;
   v_system_users user_type := user_type('SYS', 'SYSTEM', 'DBSNMP');
 begin
-  for i in (select user_id, username from dba_users)
-  
-   loop
+  for i in (select user_id, username from dba_users) loop
     if i.username not member of v_system_users then
-      null;
-    else
       dbms_output.put_line(i.user_id);
     end if;
   end loop;
