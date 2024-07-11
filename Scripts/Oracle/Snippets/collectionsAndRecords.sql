@@ -412,3 +412,71 @@ begin
   end if;
 end;
 /
+
+-- Cardinality, Set, Multiset 
+/*
+CARDINALITY returns the number of elements in a nested table
+
+SET converts a nested table into a set by eliminating duplicates.
+
+MULTISET operators combine the results of two nested tables into a single nested table.
+
+MULTISET EXCEPT [DISTINCT] takes as arguments two nested tables and returns a nested table                             
+                           whose elements are in the first nested table but not in the 
+                           second nested table. 
+MULTISET INTERSECT [DISTINCT] takes as arguments two nested tables and returns a nested table 
+                              whose values are common in the two input nested tables.
+MULTISET UNION [DISTINCT] takes as arguments two nested tables and returns a nested table 
+                          whose values are those of the two input nested tables.
+*/
+declare
+  type user_type is table of varchar2(50);
+  v_users1 user_type := user_type('SYS', 'SYSTEM', 'DBSNMP');
+  v_users2 user_type := user_type('SCOTT', 'SYSTEM', 'DBSNMP');
+  v_users3 user_type := user_type('SYS',
+                                  'SYSTEM',
+                                  'DBSNMP',
+                                  'SYS',
+                                  'SYSTEM',
+                                  'DBSNMP');
+
+  v_cardinality        number;
+  v_set                user_type;
+  v_multiset_except    user_type;
+  v_multiset_intersect user_type;
+  v_multiset_union     user_type;
+
+begin
+  dbms_output.put_line('CARDINALITY');
+  v_cardinality := cardinality(v_users3);
+  dbms_output.put_line(v_cardinality);
+  dbms_output.put_line('*****');
+
+  dbms_output.put_line('SET');
+  v_set := set(v_users3);
+  for i in v_set.first .. v_set.last loop
+    dbms_output.put_line(v_set(i));
+  end loop;
+  dbms_output.put_line('*****');
+
+  dbms_output.put_line('MULTISET EXCEPT');
+  v_multiset_except := v_users1 MULTISET EXCEPT v_users2;
+  for i in v_multiset_except.first .. v_multiset_except.last loop
+    dbms_output.put_line(v_multiset_except(i));
+  end loop;
+  dbms_output.put_line('*****');
+
+  dbms_output.put_line('MULTISET INTERSECT');
+  v_multiset_intersect := v_users1 MULTISET INTERSECT v_users2;
+  for i in v_multiset_intersect.first .. v_multiset_intersect.last loop
+    dbms_output.put_line(v_multiset_intersect(i));
+  end loop;
+  dbms_output.put_line('*****');
+
+  dbms_output.put_line('MULTISET UNION');
+  v_multiset_union := v_users1 MULTISET UNION v_users2;
+  for i in v_multiset_union.first .. v_multiset_union.last loop
+    dbms_output.put_line(v_multiset_union(i));
+  end loop;
+end;
+/
