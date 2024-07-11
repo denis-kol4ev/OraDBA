@@ -365,3 +365,19 @@ BEGIN
   end loop;
 END;
 /
+
+-- Check collection is empty / is not empty
+declare
+  type user_type is table of dba_users.username%type;
+  v_system_users user_type;
+begin
+  v_system_users := user_type();
+  if v_system_users is empty then
+    dbms_output.put_line('Collection is empty');
+  end if;
+  v_system_users := user_type('SYS', 'SYSTEM', 'DBSNMP');
+  if v_system_users is not empty then
+    dbms_output.put_line('Collection is not empty');
+  end if;
+end;
+/
