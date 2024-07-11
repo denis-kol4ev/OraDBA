@@ -381,3 +381,18 @@ begin
   end if;
 end;
 /
+
+-- Check collection is null / is not null
+declare
+  type user_type is table of dba_users.username%type;
+  v_system_users user_type;
+begin
+  if v_system_users is null then
+    dbms_output.put_line('Collection is null');
+  end if;
+  v_system_users := user_type();
+  if v_system_users is not null then
+    dbms_output.put_line('Collection is not null');
+  end if;
+end;
+/
