@@ -396,3 +396,19 @@ begin
   end if;
 end;
 /
+
+-- Comparing collections
+declare
+  type user_type is table of varchar2(50); -- element type is not record type
+  v_users1 user_type := user_type('SYS', 'SYSTEM', 'DBSNMP');
+  v_users2 user_type := user_type('SYSTEM', 'DBSNMP', 'SYS');
+  v_users3 user_type := user_type('SCOTT', 'SYSTEM', 'DBSNMP');
+begin
+  if v_users1 = v_users2 then
+    dbms_output.put_line('v_users1 = v_users2');
+  end if;
+  if v_users1 != v_users3 then
+    dbms_output.put_line('v_users1 != v_users3');
+  end if;
+end;
+/
