@@ -1,4 +1,23 @@
---pl/sql boolean example
+-- Boolean procedure example
+declare
+  v_boolean boolean;
+  procedure testify(truth boolean := null) is
+  begin
+    if truth is not null then
+      if truth then
+        dbms_output.put_line('True');
+      else
+        dbms_output.put_line('False');
+      end if;
+    end if;
+  end;
+begin
+  v_boolean := 5 > 10;
+  testify(truth => (v_boolean));
+end;
+/
+
+-- Boolean function example
 create or replace function isEven(n number)
 return boolean
 as
@@ -14,7 +33,7 @@ begin
    end if;
 end;
 
---pl/sql boolean example 2
+-- Boolean function example 2
 CREATE OR REPLACE FUNCTION valid_deptid(p_deptid IN departments.department_id%TYPE)
   RETURN BOOLEAN IS
   v_dummy PLS_INTEGER;
