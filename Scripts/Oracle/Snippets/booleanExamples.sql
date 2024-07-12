@@ -42,39 +42,38 @@ begin
 end;
 /
 
--- Boolean function with case expression
+-- Boolean function with case statement
 declare
-  v_boolean boolean;
-  function f_bool_to_varch2(v_flag in boolean) return varchar2 is
+  function isEven(n number) return boolean as
   begin
-    return 
-    case v_flag 
-      when true then 'True' 
-      when false then 'False' 
-      else 'Null'
-    end;
-  end f_bool_to_varch2;
+    return mod(n, 2) = 0;
+  end isEven;
 begin
-  v_boolean := 5 < 10;
-  dbms_output.put_line(f_bool_to_varch2(v_boolean));
+  case isEven(5)
+    when true then
+      dbms_output.put_line('True');
+    else
+      dbms_output.put_line('False');
+  end case;
 end;
 /
--- Boolean procedure with case expression
+
+-- Boolean procedure with case statement
 declare
   v_boolean boolean;
   procedure testify(truth boolean := null) is
   begin
-    if truth is not null then
-      dbms_output.put_line(case truth
-                             when true then
-                              'True'
-                             when false then
-                              'False'
-                           end);
-    end if;
+    case truth
+      when true then
+        dbms_output.put_line('True');
+      when false then
+        dbms_output.put_line('False');
+      else
+        dbms_output.put_line('Null');
+    end case;
   end;
 begin
-  v_boolean := 5 < 10;
+  v_boolean := 5 > 10;
   testify(truth => (v_boolean));
 end;
 /
