@@ -77,3 +77,41 @@ begin
   testify(truth => (v_boolean));
 end;
 /
+
+-- Boolean function with case expression
+declare
+  v_boolean boolean;
+  function f_bool_to_varch2(v_flag in boolean) return varchar2 is
+  begin
+    return 
+    case v_flag 
+      when true then 'True' 
+      when false then 'False' 
+      else 'Null'
+    end;
+  end f_bool_to_varch2;
+begin
+  v_boolean := 5 < 10;
+  dbms_output.put_line(f_bool_to_varch2(v_boolean));
+end;
+/
+
+-- Boolean procedure with case expression
+declare
+  v_boolean boolean;
+  procedure testify(truth boolean := null) is
+  begin
+      dbms_output.put_line(case truth
+                             when true then
+                              'True'
+                             when false then
+                              'False'
+                             else
+                              'Null'
+                           end);
+  end;
+begin
+  v_boolean := 5 < 10;
+  testify(truth => (v_boolean));
+end;
+/
