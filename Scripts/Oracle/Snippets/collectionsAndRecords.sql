@@ -523,92 +523,171 @@ END;
 -- Collections methods
 /*
 The basic syntax of a collection method invocation is: collection_name.method
+
 DELETE - Deletes elements from collection.
+
 TRIM - Deletes elements from end of varray or nested table.
+TRIM operates on the internal size of a collection. That is, if DELETE deletes 
+an element but keeps a placeholder for it, then TRIM considers the element to exist. 
+Therefore, TRIM can delete a deleted element.
+
 EXTEND - Adds elements to end of varray or nested table.
+
 EXISTS - Returns TRUE if and only if specified element of varray or nested table exists.
+
 FIRST - Returns first index in collection.
+
 LAST - Returns last index in collection.
+
 COUNT - Returns number of elements in collection.
+
 LIMIT - Returns maximum number of elements that collection can have.
+
 PRIOR - Returns index that precedes specified index.
+
 NEXT - Returns index that succeeds specified index.
 */
 declare
-  v_idx number;
-
-  type nt_num_type is table of number;
-  nt_n nt_num_type := nt_num_type(11, 22, 33, 44);
-
-  type nt_varch_type is table of varchar2(2);
-  nt_v nt_varch_type := nt_varch_type('A', 'B', 'C', 'D');
-
-  procedure print_nt_n(nt_n nt_num_type) is
-  begin
-    v_idx := nt_n.first;
-    if v_idx is null then
-      dbms_output.put_line('nt_n is empty');
-      else
-    while v_idx is not null loop
-      dbms_output.put_line('nt_n index ' || v_idx || ' nt_n value ' ||
-                           nt_n(v_idx));
-      v_idx := nt_n.next(v_idx);
-    end loop;
-    end if;
-    dbms_output.put_line('-----');
-  end print_nt_n;
+  type nt_type is table of varchar2(2); -- все примеры будут работать и с is table of number
+  v_nt nt_type;
   
-  procedure print_nt_v(nt_v nt_varch_type) is
+  v_idx number;
+  
+  procedure print_nt(nt_v nt_type) is
   begin
-    v_idx := nt_v.first;
+    v_idx := v_nt.first;
     if v_idx is null then
-      dbms_output.put_line('nt_v is empty');
+      dbms_output.put_line('v_nt is empty');
       else
     while v_idx is not null loop
-      dbms_output.put_line('nt_v index ' || v_idx || ' nt_v value ' ||
-                           nt_v(v_idx));
-      v_idx := nt_v.next(v_idx);
+      dbms_output.put_line('v_nt index ' || v_idx || ' v_nt value ' || v_nt(v_idx));
+      v_idx := v_nt.next(v_idx);
     end loop;
     end if;
     dbms_output.put_line('-----');
-  end print_nt_v;
+  end print_nt;
 
 begin
-  dbms_output.put_line('Initial collection');
-  print_nt_n(nt_n);
-  print_nt_v(nt_v);
+  dbms_output.put_line('*** DELETE ***');
   
-  dbms_output.put_line('DELETE');
+  v_nt := nt_type('A', 'B', 'C', 'D');
+  
+  dbms_output.put_line('Initial collection');
+  print_nt(v_nt);
   
   dbms_output.put_line('Delete second element');
-  nt_n.DELETE(2);     
-  print_nt_n(nt_n);
-  nt_v.DELETE(2);     
-  print_nt_v(nt_v);
+  v_nt.DELETE(2);     
+  print_nt(v_nt);
   
   dbms_output.put_line('Restore second element');
-  nt_n(2) := 2222;    
-  print_nt_n(nt_n);
-  nt_v(2) := 'BB';
-  print_nt_v(nt_v);
+  v_nt(2) := 'BB';
+  print_nt(v_nt);
   
   dbms_output.put_line('Delete range of elements');
-  nt_n.DELETE(2, 4);  
-  print_nt_n(nt_n);
-  nt_v.DELETE(2, 4);  
-  print_nt_v(nt_v);
+  v_nt.DELETE(2, 4);  
+  print_nt(v_nt);
   
   dbms_output.put_line('Restore third element');
-  nt_n(3) := 3333;
-  print_nt_n(nt_n);
-  nt_v(3) := 'CC';
-  print_nt_v(nt_v);
+  v_nt(3) := 'CC';
+  print_nt(v_nt);
   
   dbms_output.put_line('Delete all elements');
-  nt_n.DELETE;
-  print_nt_n(nt_n);
-  nt_v.DELETE;
-  print_nt_v(nt_v);
+  v_nt.DELETE;
+  print_nt(v_nt);
+
+  dbms_output.put_line('*** TRIM ***');
+  
+  v_nt := nt_type('A', 'B', 'C', 'D');
+  
+  dbms_output.put_line('Initial collection');
+  print_nt(v_nt);
+    
+  dbms_output.put_line('Trim last element');
+  v_nt.TRIM;
+  print_nt(v_nt);
+  
+  dbms_output.put_line('Delete third element');
+  v_nt.DELETE(3);
+  print_nt(v_nt);
+  
+  dbms_output.put_line('Trim last two elements');
+  v_nt.TRIM(2);
+  print_nt(v_nt);
+
+  dbms_output.put_line('*** EXTEND ***');
+  
+  v_nt := nt_type('A', 'B', 'C', 'D');
+  
+  dbms_output.put_line('Initial collection');
+  print_nt(v_nt);
+  
+  dbms_output.put_line('Append two copies of first element');
+  v_nt.EXTEND(2,1); 
+  print_nt(v_nt);
+  
+  dbms_output.put_line('Delete fifth element');
+  v_nt.DELETE(5); 
+  print_nt(v_nt);
+  
+  dbms_output.put_line('Append one null element');
+  v_nt.EXTEND; 
+  print_nt(v_nt);
+  
+  dbms_output.put_line('*** EXISTS ***');
+  
+  v_nt := nt_type('A', 'B', 'C', 'D');
+  
+  dbms_output.put_line('Initial collection');
+  print_nt(v_nt);
+  
+  dbms_output.put_line('Delete second element');
+  
+  v_nt.DELETE(2);
+  for i in 1..4 loop
+    if v_nt.EXISTS(i) then
+      dbms_output.put_line('v_nt(' || i || ') = ' || v_nt(i));
+    else
+      dbms_output.put_line('v_nt(' || i || ') does not exist');
+    end if;
+  end loop;
+  
+  dbms_output.put_line('*** FIRST and LAST ***');
+  
+  v_nt := nt_type('A', 'B', 'C', 'D');
+  
+  dbms_output.put_line('Initial collection');
+  print_nt(v_nt);
+    
+  dbms_output.put_line('FIRST = ' || v_nt.FIRST);
+  dbms_output.put_line('LAST = ' || v_nt.LAST);
+  
+  dbms_output.put_line('Delete 1 and 4 elements');
+  v_nt.DELETE(1);
+  v_nt.DELETE(4);
+  
+  dbms_output.put_line('FIRST = ' || v_nt.FIRST);
+  dbms_output.put_line('LAST = ' || v_nt.LAST);
+ 
+  dbms_output.put_line('*** COUNT ***');
+  
+  v_nt := nt_type('A', 'B', 'C', 'D');
+  
+  dbms_output.put_line('Initial collection');
+  print_nt(v_nt);
+  dbms_output.put_line('COUNT = ' || v_nt.COUNT);
+  dbms_output.put_line('LAST = ' || v_nt.LAST);
+  
+  dbms_output.put_line('Delete third element');
+  v_nt.DELETE(3);
+  print_nt(v_nt);
+  dbms_output.put_line('COUNT = ' || v_nt.COUNT);
+  dbms_output.put_line('LAST = ' || v_nt.LAST);
+  
+  dbms_output.put_line('Add two null elements to end');
+  v_nt.EXTEND(2);
+  print_nt(v_nt);
+  dbms_output.put_line('COUNT = ' || v_nt.COUNT);
+  dbms_output.put_line('LAST = ' || v_nt.LAST);
 
 end;
 /
