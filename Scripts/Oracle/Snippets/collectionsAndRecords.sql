@@ -2,6 +2,7 @@
 -- 1. Collections
 -- 2. Records
 -- 3. Operations on Collections
+-- 4. Collections methods
    
 -- 1. Collections 
 -- Three types of collections
