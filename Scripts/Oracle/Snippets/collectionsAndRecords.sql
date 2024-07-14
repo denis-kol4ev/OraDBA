@@ -542,6 +542,8 @@ LAST - Returns last index in collection.
 COUNT - Returns number of elements in collection.
 
 LIMIT - Returns maximum number of elements that collection can have.
+If the collection has no maximum number of elements, LIMIT returns NULL. 
+Only a varray has a maximum size.
 
 PRIOR - Returns index that precedes specified index.
 
@@ -560,7 +562,7 @@ declare
       dbms_output.put_line('v_nt is empty');
       else
     while v_idx is not null loop
-      dbms_output.put_line('v_nt index ' || v_idx || ' v_nt value ' || v_nt(v_idx));
+      dbms_output.put_line('v_nt index ' || v_idx || ' v_nt value ' || nvl(v_nt(v_idx), 'null'));
       v_idx := v_nt.next(v_idx);
     end loop;
     end if;
@@ -688,6 +690,76 @@ begin
   print_nt(v_nt);
   dbms_output.put_line('COUNT = ' || v_nt.COUNT);
   dbms_output.put_line('LAST = ' || v_nt.LAST);
-
+  
+  dbms_output.put_line('*** LIMIT ***');
+  
+  v_nt := nt_type('A', 'B', 'C', 'D');
+  
+  dbms_output.put_line('Initial collection');
+  print_nt(v_nt);
+  
+  dbms_output.put_line('LIMIT = ' || nvl(to_char(v_nt.LIMIT), 'null'));
+  
+  dbms_output.put_line('*** PRIOR and NEXT ***');
+  
+  v_nt := nt_type('A', 'B', 'C', 'D');
+  
+  dbms_output.put_line('Initial collection');
+  print_nt(v_nt);
+  
+  dbms_output.put_line('Delete second element'); 
+  v_nt.DELETE(2);
+ 
+  v_idx := v_nt.FIRST;
+  while v_idx is not null loop
+    dbms_output.put('v_nt current index ' || v_idx || ' prior index ' || nvl(to_char(v_nt.PRIOR(v_idx)), 'null'));
+   if v_nt.EXISTS(v_nt.PRIOR(v_idx)) then
+    dbms_output.put_line(', v_nt current value ' || nvl(v_nt(v_idx), 'null') || ' prior value ' || nvl(to_char(v_nt(v_nt.PRIOR(v_idx))), 'null'));
+   else
+    dbms_output.put_line(', v_nt current value ' || nvl(v_nt(v_idx), 'null') || ' prior value null');
+   end if;
+   v_idx := v_nt.NEXT(v_idx);
+   end loop;
+  
+  dbms_output.put_line('-----');
+  dbms_output.put_line('First to last and Last to first');
+  
+  v_nt := nt_type('A', null, 'C', 'D', null);
+  
+  dbms_output.put_line('First to last:');
+  v_idx := v_nt.FIRST;
+  while v_idx is not null loop
+    dbms_output.put_line('v_nt index ' || v_idx || ' v_nt value ' || nvl(to_char(v_nt(v_idx)), 'null'));
+    v_idx := v_nt.NEXT(v_idx);
+  end loop;
+  
+  dbms_output.put_line('-----');
+  
+  dbms_output.put_line('Last to first:');
+   v_idx := v_nt.LAST;
+  while v_idx is not null loop
+    dbms_output.put_line('v_nt index ' || v_idx || ' v_nt value ' || nvl(to_char(v_nt(v_idx)), 'null'));
+    v_idx := v_nt.PRIOR(v_idx);
+  end loop;
+  
+  dbms_output.put_line('-----');
+  dbms_output.put_line('Delete first and second elements');
+  v_nt.DELETE(1, 2);
+  
+  dbms_output.put_line('First to last:');
+  v_idx := v_nt.FIRST;
+  while v_idx is not null loop
+    dbms_output.put_line('v_nt index ' || v_idx || ' v_nt value ' || nvl(to_char(v_nt(v_idx)), 'null'));
+    v_idx := v_nt.NEXT(v_idx);
+  end loop;
+  
+  dbms_output.put_line('-----');
+  
+  dbms_output.put_line('Last to first:');
+   v_idx := v_nt.LAST;
+  while v_idx is not null loop
+    dbms_output.put_line('v_nt index ' || v_idx || ' v_nt value ' || nvl(to_char(v_nt(v_idx)), 'null'));
+    v_idx := v_nt.PRIOR(v_idx);
+  end loop;
 end;
 /
