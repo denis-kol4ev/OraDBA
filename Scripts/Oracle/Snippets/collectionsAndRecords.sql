@@ -1,9 +1,10 @@
 -- Collections and Records
 -- 1. Collections
 -- 2. Records
--- 3. Operations on Collections
+-- 3. Operations on collections
 -- 4. Collections methods
-   
+-- 5. BULK COLLECT and FORALL
+
 -- 1. Collections 
 -- Three types of collections
 -- Nested Tables
@@ -319,7 +320,7 @@ begin
 end;
 /
 
--- 3. Operations on Collections
+-- 3. Operations on collections
 -- 3.1 Determing members of collection: member of  / not member of
 declare
   type user_type is table of dba_users.username%type;
@@ -367,7 +368,7 @@ BEGIN
 END;
 /
 
--- Check collection is empty / is not empty
+-- 3.2 Check collection is empty / is not empty
 declare
   type user_type is table of dba_users.username%type;
   v_system_users user_type;
@@ -383,7 +384,7 @@ begin
 end;
 /
 
--- Check collection is null / is not null
+-- 3.3 Check collection is null / is not null
 declare
   type user_type is table of dba_users.username%type;
   v_system_users user_type;
@@ -398,7 +399,7 @@ begin
 end;
 /
 
--- Comparing collections
+-- 3.4 Comparing collections
 declare
   type user_type is table of varchar2(50); -- element type is not record type
   v_users1 user_type := user_type('SYS', 'SYSTEM', 'DBSNMP');
@@ -414,7 +415,7 @@ begin
 end;
 /
 
--- Cardinality, Set, Multiset 
+-- 3.5 Cardinality, Set, Multiset 
 /*
 CARDINALITY returns the number of elements in a nested table
 
@@ -482,7 +483,7 @@ begin
 end;
 /
 
--- Comparing Nested Tables with SQL Multiset Conditions
+-- 3.6 Comparing Nested Tables with SQL Multiset Conditions
 DECLARE 
   TYPE nested_typ IS TABLE OF NUMBER; 
   nt1 nested_typ := nested_typ(1,2,3); 
@@ -520,7 +521,7 @@ BEGIN
 END; 
 /
 
--- Collections methods
+-- 4. Collections methods
 /*
 The basic syntax of a collection method invocation is: collection_name.method
 
@@ -763,3 +764,68 @@ begin
   end loop;
 end;
 /
+
+-- 5. BULK COLLECT and FORALL
+-- The BULK COLLECT clause returns results from SQL to PL/SQL in batches rather than one at a time.
+-- The FORALL statement sends DML statements from PL/SQL to SQL in batches rather than one at a time. 
+
+-- 5. 1 BULK COLLECT
+-- select bulk collect into
+-- fetch bulk collect into [limit]
+-- returning bulk collect into
+
+create table dba_users_tmp as select * from dba_users;
+
+declare
+  type user_rec is record(
+    user_id  dba_users.user_id%type,
+    username dba_users.username%type);
+  type user_rec_type is table of user_rec;
+  v_all_users user_rec_type;
+
+  cursor c1 is
+    select user_id, username from dba_users order by user_id;
+begin
+  dbms_output.put_line('select bulk collect into' || chr(10));
+  select user_id, username
+    bulk collect
+    into v_all_users
+    from dba_users
+   order by user_id;
+  for i in v_all_users.first .. v_all_users.last loop
+    if mod(v_all_users(i).user_id, 2) = 0 then
+      dbms_output.put_line('USER_ID: ' || rpad(v_all_users(i).user_id, 10) ||
+                           ' USERNAME: ' || v_all_users(i).username);
+    end if;
+  end loop;
+
+  dbms_output.put_line(chr(10) || 'fetch bulk collect into [limit]' ||
+                       chr(10));
+  open c1;
+  loop
+    fetch c1 bulk collect
+      into v_all_users limit 10;
+    exit when v_all_users.count = 0;
+    for i in v_all_users.first .. v_all_users.last loop
+      if mod(v_all_users(i).user_id, 2) = 1 then
+        dbms_output.put_line('USER_ID: ' ||
+                             rpad(v_all_users(i).user_id, 10) ||
+                             ' USERNAME: ' || v_all_users(i).username);
+      end if;
+    end loop;
+  end loop;
+  close c1;
+
+  dbms_output.put_line(chr(10) || 'returning bulk collect into' || chr(10));
+  delete from dba_users_tmp
+   where mod(user_id, 5) = 0
+  returning user_id, username bulk collect into v_all_users;
+  commit;
+  for i in v_all_users.first .. v_all_users.last loop
+    dbms_output.put_line('USER_ID: ' || rpad(v_all_users(i).user_id, 10) ||
+                         ' USERNAME: ' || v_all_users(i).username);
+  end loop;
+end;
+/
+
+drop table dba_users_tmp;
