@@ -829,3 +829,52 @@ end;
 /
 
 drop table dba_users_tmp;
+
+-- 5.2 FORALL
+
+create table dba_users_tmp as select * from dba_users;
+
+declare
+  type user_rec is record(
+    user_id  dba_users.user_id%type,
+    username dba_users.username%type);
+  type user_rec_type is table of user_rec;
+  v_all_users user_rec_type;
+
+  type user_id_type is table of dba_users.user_id%type;
+  v_user_id user_id_type;
+begin
+  select user_id, username
+    bulk collect
+    into v_all_users
+    from dba_users
+   where mod(user_id, 2) = 0
+   order by user_id;
+  -- forall
+  forall i in v_all_users.first .. v_all_users.last
+    delete from dba_users_tmp where user_id = v_all_users(i).user_id;
+  dbms_output.put_line(SQL%ROWCOUNT); -- total number of rows affected by DML statements in the forall loop
+  rollback;
+
+  -- forall with returning bulk collect into
+  forall i in v_all_users.first .. v_all_users.last
+    delete from dba_users_tmp
+     where user_id = v_all_users(i).user_id
+    returning user_id bulk collect into v_user_id;
+
+  for i in v_all_users.first .. v_all_users.last loop
+    dbms_output.put_line(SQL%BULK_ROWCOUNT(i)); -- collection, contains the number of rows affected by each DML statement
+  end loop;
+  rollback;
+
+  -- forall with sparse collection, in indices of
+  v_all_users.DELETE(2);
+  v_all_users.DELETE(4);
+  v_all_users.DELETE(6);
+  forall i in indices of v_all_users
+    delete from dba_users_tmp where user_id = v_all_users(i).user_id;
+  dbms_output.put_line(SQL%ROWCOUNT);
+  rollback;
+end;
+/
+drop table dba_users_tmp;
