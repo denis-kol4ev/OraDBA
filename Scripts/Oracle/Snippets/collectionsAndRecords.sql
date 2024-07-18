@@ -878,3 +878,38 @@ begin
 end;
 /
 drop table dba_users_tmp;
+
+-- Print sparse collection with two methods
+declare
+ type user_type is table of dba_users.username%type;
+ user_tab user_type := user_type('User1','User2','User3','User4','User5');
+ 
+ v_idx number;
+begin
+ dbms_output.put_line('Initial collection'); 
+ for i in user_tab.first .. user_tab.last loop
+   dbms_output.put_line('Index: ' || i ||' Value: ' || user_tab(i));
+ end loop;
+ 
+ dbms_output.put_line('Delete some elements');
+ user_tab.delete(2);
+ user_tab.delete(5);
+ 
+ dbms_output.put_line('Print sparse collection method 1');
+ 
+ v_idx := user_tab.first;
+ while v_idx is not null loop
+      dbms_output.put_line('Index: ' || v_idx ||' Value: ' || user_tab(v_idx));
+      v_idx := user_tab.next(v_idx);
+    end loop;
+    
+ dbms_output.put_line('Print sparse collection method 2');
+ 
+ for i in user_tab.first .. user_tab.last loop
+   if user_tab.exists(i) then
+   dbms_output.put_line('Index: ' || i ||' Value: ' || user_tab(i));
+   end if;
+ end loop;
+  
+end;
+/
