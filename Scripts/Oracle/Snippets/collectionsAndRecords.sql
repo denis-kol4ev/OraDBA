@@ -158,6 +158,8 @@ END;
 -- 2. Records 
 -- Cursor-based record
 -- record_name cursor_name%ROWTYPE;
+
+-- Cursor-based record with fetch
 declare
   cursor c_users is
     select u.user_id, u.username, u.last_login from dba_users u;
@@ -173,7 +175,24 @@ begin
     end if;
   end loop;
 end;
+/
 
+-- Cursor-based record with bulk collect
+declare
+  cursor c_users is
+    select u.user_id, u.username, u.last_login from dba_users u;
+  type t_users is table of c_users%rowtype;
+  v_users t_users;
+begin
+  select u.user_id, u.username, u.last_login bulk collect into v_users from dba_users u;
+  for i in v_users.first .. v_users.last loop
+     if v_users(i).last_login is not null then
+      dbms_output.put_line(v_users(i).username || '   ' || v_users(i).last_login);
+    end if;
+  end loop;
+end;
+/
+   
 -- Programmer-defined record
 -- TYPE record_type IS RECORD
 
