@@ -7,7 +7,7 @@ import time
 
 login(username="SYSMAN", password="123", force=True)
 
-v_host_list = ['server1.company.local','server3.company.local','server3.company.local']
+v_host_list = ['server1.company.local','server2.company.local','server3.company.local']
 
 for i in v_host_list:
     v_check_agent = list( sql=""" select a.target_name, a.target_type, a.agent_name, a.agent_host_name, h.home_location
