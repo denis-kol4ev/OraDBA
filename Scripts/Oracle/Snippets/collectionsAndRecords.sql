@@ -113,6 +113,40 @@ BEGIN
 END;
 /
 
+-- New syntax for 18c and later
+-- https://blogs.oracle.com/connect/post/easy-initializing-for-records-and-arrays 
+DECLARE
+  TYPE assoc_array_num_type IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
+  TYPE assoc_array_str_type IS TABLE OF VARCHAR2(32) INDEX BY PLS_INTEGER;
+  TYPE assoc_array_str_type2 IS TABLE OF VARCHAR2(32) INDEX BY VARCHAR2(64);
+  v1    assoc_array_num_type;
+  v2    assoc_array_str_type;
+  v3    assoc_array_str_type2;
+  v_idx varchar(20);
+BEGIN
+  
+  v1 := assoc_array_num_type(1 => 10, 2 => 20, 3 => 30);
+
+  for i in v1.first .. v1.last loop
+    dbms_output.put_line(v1(i));
+  end loop;
+  
+  v2 := assoc_array_str_type(1 => 'A', 2 => 'B', 3 => 'C');
+
+  for i in v2.first .. v2.last loop
+    dbms_output.put_line(v2(i));
+  end loop;
+  
+  v3 := assoc_array_str_type2('Canada' => 'Ottawa', 'USA' => 'Washington', 'Russia' => 'Moscow');
+
+  v_idx := v3.first;
+  while (v_idx is not null) loop
+    dbms_output.put_line('The capital of ' || v_idx || ' is ' || v3(v_idx));
+    v_idx := v3.next(v_idx);
+  end loop;
+END;
+/
+
 -- Associative array example 2
 DECLARE
   TYPE dept_table_type is table of departments.department_name%TYPE INDEX BY PLS_INTEGER;
