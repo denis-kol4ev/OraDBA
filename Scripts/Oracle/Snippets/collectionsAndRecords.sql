@@ -292,6 +292,45 @@ begin
 end;
 /
 
+-- New syntax for 18c and later
+-- https://blogs.oracle.com/connect/post/easy-initializing-for-records-and-arrays 
+-- Record with associative array collection (index by pls_integer)
+DECLARE
+  TYPE t_rec IS RECORD(
+    USER VARCHAR2(30),
+    host VARCHAR2(30),
+    port NUMBER);
+  TYPE t_rec_type IS TABLE OF t_rec INDEX BY PLS_INTEGER;
+  v1 t_rec_type := t_rec_type();
+BEGIN
+  v1 := t_rec_type(1 => t_rec('sap_dev', 'server-dev', 1521),
+                   2 => t_rec('sap_test', 'server-test', 1521),
+                   3 => t_rec('sap_prod', 'server-prod', 1521));
+
+  FOR i IN 1 .. v1.count LOOP
+    dbms_output.put_line(v1(i).user || ' ' || v1(i).host || ' ' || v1(i).port);
+  END LOOP;
+
+  -- Positional Notation
+  v1(1) := t_rec('sap_dev', 'server-dev', 1521);
+  v1(2) := t_rec('sap_test', 'server-test', 1521);
+  v1(3) := t_rec('sap_prod', 'server-prod', 1521);
+
+  FOR i IN v1.first .. v1.last LOOP
+    dbms_output.put_line(v1(i).user || ' ' || v1(i).host || ' ' || v1(i).port);
+  END LOOP;
+
+  -- Named Notation
+  v1(1) := t_rec(USER => 'sap_dev', host => 'server-dev', port => 1521);
+  v1(2) := t_rec(USER => 'sap_test', host => 'server-test', port => 1521);
+  v1(3) := t_rec(USER => 'sap_prod', host => 'server-prod', port => 1521);
+
+  FOR i IN v1.first .. v1.last LOOP
+    dbms_output.put_line(v1(i).user || ' ' || v1(i).host || ' ' || v1(i).port);
+  END LOOP;
+END;
+/
+
 -- Record with associative array collection (index by varchar2)
 declare
   type t_rec is record(user varchar2(30), host varchar2(30), port number);
