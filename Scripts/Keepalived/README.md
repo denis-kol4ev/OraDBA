@@ -1,3 +1,5 @@
+# Keepalived
+
 Keepalived — ПО для обеспечения высокой доступности (high availabilitty) и балансировки нагрузки (load balancing) для Linux серверов.
 
 HA (high availabilitty) реализован на базе протокола VRRP (Virtual Router Redundancy Protocol) и решает задачу доступности виртуального IP адреса (VIP).
@@ -33,14 +35,13 @@ yum install -y keepalived
 keepalived --version
 systemctl status keepalived
 
-2. Перенос конфиурациооных файлов
+2. Перенос конфиурационных файлов
 
-cd /etc/keepalived/
+cd /etc/keepalived
 mv keepalived.conf keepalived.conf.default
+mv /home/oracle/maint/keepalived.conf ./keepalived.conf
 
 mkdir -pv /home/oracle/maint/keepalived
- 
-mv /home/oracle/maint/keepalived.conf ./keepalived.conf
 
 chown oracle:oinstall /home/oracle/maint/lsnr_restart.sh
 chown oracle:oinstall /home/oracle/maint/primary_check.sh
@@ -58,3 +59,10 @@ systemctl start keepalived
 systemctl status keepalived
 
 journalctl -u keepalived -n20
+
+
+journalctl --disk-usage
+journalctl --vacuum-time=7d
+journalctl --vacuum-size=10M
+
+1234
