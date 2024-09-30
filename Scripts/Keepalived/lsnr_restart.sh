@@ -8,12 +8,14 @@ echo
 echo "=========================================================="
 echo " $(date) Step 1: Stop Listener "              
 echo "=========================================================="
-lsnrctl stop
+srvctl stop listener
+#lsnrctl stop
 echo
 echo "=========================================================="
 echo " $(date) Step 2: Start Listener "              
 echo "=========================================================="
-lsnrctl start
+srvctl stop listener
+#lsnrctl start
 echo
 echo "=========================================================="
 echo " $(date) Step 3: Register Database "              
