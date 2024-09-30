@@ -1,5 +1,4 @@
 #!/bin/bash
-source /home/oracle/.bash_profile >> /dev/null 2>&1
 
 MAINT_DIR=/home/oracle/maint
 LOGFILE=$MAINT_DIR/restart_lsnr.log

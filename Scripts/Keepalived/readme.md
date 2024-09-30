@@ -37,6 +37,9 @@ systemctl status keepalived
 
 cd /etc/keepalived/
 mv keepalived.conf keepalived.conf.default
+
+mkdir -pv /home/oracle/maint/keepalived
+ 
 mv /home/oracle/maint/keepalived.conf ./keepalived.conf
 
 chown oracle:oinstall /home/oracle/maint/lsnr_restart.sh
@@ -47,8 +50,11 @@ chmod 700 /home/oracle/maint/lsnr_restart.sh
 chmod 700 /home/oracle/maint/primary_check.sh
 chmod 700 /home/oracle/maint/standby_check.sh
 
+mv /home/oracle/maint/keepalived_notify.sh /usr/local/bin/
+chmod 700 /usr/local/bin/keepalived_notify.sh
 
-
-
+systemctl enable keepalived
+systemctl start keepalived
+systemctl status keepalived
 
 journalctl -u keepalived -n20
