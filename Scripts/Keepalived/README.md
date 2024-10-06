@@ -75,6 +75,7 @@ chmod 644 /home/oracle/maint/keepalived/ora_env
 systemctl enable keepalived
 systemctl start keepalived
 systemctl status keepalived
+ip a
 ```
 
 ### 4. Просмотр логов
