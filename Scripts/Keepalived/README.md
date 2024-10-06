@@ -35,34 +35,35 @@ yum install -y keepalived
 keepalived --version
 systemctl status keepalived
 
-2. Перенос конфиурационных файлов
+2. Конфигурационные файлы
+Переносим конфигурационные файлы из git проекта по соответствующим папкам
 
-cd /etc/keepalived
-mv keepalived.conf keepalived.conf.default
-mv /home/oracle/maint/keepalived.conf ./keepalived.conf
+mv keepalived.conf /etc/keepalived/
+chown root:root /etc/keepalived/keepalived.conf
+chmod 644 /etc/keepalived/keepalived.conf
 
-mkdir -pv /home/oracle/maint/keepalived
+mv keepalived_notify.sh /usr/local/bin/
+chown root:root /usr/local/bin/keepalived_notify.sh 
+chmod 744 /usr/local/bin/keepalived_notify.sh
 
-chown oracle:oinstall /home/oracle/maint/lsnr_restart.sh
-chown oracle:oinstall /home/oracle/maint/primary_check.sh
-chown oracle:oinstall /home/oracle/maint/standby_check.sh
+mv lsnr_restart.sh /home/oracle/maint/keepalived/
+mv primary_check.sh /home/oracle/maint/keepalived/
+mv standby_check.sh /home/oracle/maint/keepalived/
+mv ora_env /home/oracle/maint/keepalived/
+chown oracle:oinstall /home/oracle/maint/keepalived/lsnr_restart.sh
+chown oracle:oinstall /home/oracle/maint/keepalived/primary_check.sh
+chown oracle:oinstall /home/oracle/maint/keepalived/standby_check.sh
+chown oracle:oinstall /home/oracle/maint/keepalived/ora_env
+chmod 700 /home/oracle/maint/keepalived/lsnr_restart.sh
+chmod 700 /home/oracle/maint/keepalived/primary_check.sh
+chmod 700 /home/oracle/maint/keepalived/standby_check.sh
+chmod 644 /home/oracle/maint/keepalived/ora_env
+заменить на 700 
 
-chmod 700 /home/oracle/maint/lsnr_restart.sh
-chmod 700 /home/oracle/maint/primary_check.sh
-chmod 700 /home/oracle/maint/standby_check.sh
-
-mv /home/oracle/maint/keepalived_notify.sh /usr/local/bin/
-chmod 700 /usr/local/bin/keepalived_notify.sh
-
+3. Добавляем в автозагрузку и запускаем
 systemctl enable keepalived
 systemctl start keepalived
 systemctl status keepalived
 
+4. Просмотр логов
 journalctl -u keepalived -n20
-
-
-journalctl --disk-usage
-journalctl --vacuum-time=7d
-journalctl --vacuum-size=10M
-
-1234

@@ -1,6 +1,6 @@
 #!/bin/bash
 #. /home/oracle/.bash_profile >> /dev/null 2>&1 
-source /home/oracle/maint/ora_env
+source /home/oracle/maint/keepalived/ora_env
 rec=$(sqlplus -S /nolog << EOF
 conn sys / as sysdba
 set pages 1001
