@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MAINT_DIR=/home/oracle/maint
+MAINT_DIR=/home/oracle/maint/keepalived
 LOGFILE=$MAINT_DIR/restart_lsnr.log
 
 {
@@ -14,7 +14,7 @@ echo
 echo "=========================================================="
 echo " $(date) Step 2: Start Listener "              
 echo "=========================================================="
-srvctl stop listener
+srvctl start listener
 #lsnrctl start
 echo
 echo "=========================================================="
