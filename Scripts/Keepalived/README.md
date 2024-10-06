@@ -28,42 +28,56 @@ How To Configure Client Failover For Data Guard Connections Using Database Servi
 Клиентсоке ПО не поддерживает стро
 Для коробочных приложений в которых настройка проводится через инсталлятор и нельзя задать произвольную строку подключения к БД с указанием нескольких серверов.
 
-Настройка keepalived
+## Настройка keepalived
 
-1. Установка
+### 1. Установка
+
+```shell
 yum install -y keepalived
 keepalived --version
 systemctl status keepalived
+```
 
-2. Конфигурационные файлы
+### 2. Конфигурационные файлы
+
 Переносим конфигурационные файлы из git проекта по соответствующим папкам
 
-mv keepalived.conf /etc/keepalived/
+```shell
+cp keepalived.conf /etc/keepalived/
 chown root:root /etc/keepalived/keepalived.conf
 chmod 644 /etc/keepalived/keepalived.conf
 
-mv keepalived_notify.sh /usr/local/bin/
+cp keepalived_notify.sh /usr/local/bin/
 chown root:root /usr/local/bin/keepalived_notify.sh 
 chmod 744 /usr/local/bin/keepalived_notify.sh
 
-mv lsnr_restart.sh /home/oracle/maint/keepalived/
-mv primary_check.sh /home/oracle/maint/keepalived/
-mv standby_check.sh /home/oracle/maint/keepalived/
-mv ora_env /home/oracle/maint/keepalived/
+mkdir -p /home/oracle/maint/keepalived
+chown oracle:oinstall /home/oracle/maint/keepalived
+
+cp lsnr_restart.sh /home/oracle/maint/keepalived/
+cp primary_check.sh /home/oracle/maint/keepalived/
+cp standby_check.sh /home/oracle/maint/keepalived/
+cp ora_env /home/oracle/maint/keepalived/
 chown oracle:oinstall /home/oracle/maint/keepalived/lsnr_restart.sh
 chown oracle:oinstall /home/oracle/maint/keepalived/primary_check.sh
 chown oracle:oinstall /home/oracle/maint/keepalived/standby_check.sh
 chown oracle:oinstall /home/oracle/maint/keepalived/ora_env
-chmod 700 /home/oracle/maint/keepalived/lsnr_restart.sh
-chmod 700 /home/oracle/maint/keepalived/primary_check.sh
-chmod 700 /home/oracle/maint/keepalived/standby_check.sh
+chmod 744 /home/oracle/maint/keepalived/lsnr_restart.sh
+chmod 744 /home/oracle/maint/keepalived/primary_check.sh
+chmod 744 /home/oracle/maint/keepalived/standby_check.sh
 chmod 644 /home/oracle/maint/keepalived/ora_env
-заменить на 700 
+```
 
-3. Добавляем в автозагрузку и запускаем
+### 3. Добавляем в автозагрузку и запускаем
+
+```shell
 systemctl enable keepalived
 systemctl start keepalived
 systemctl status keepalived
+```
 
-4. Просмотр логов
+### 4. Просмотр логов
+
+```shell
 journalctl -u keepalived -n20
+```
