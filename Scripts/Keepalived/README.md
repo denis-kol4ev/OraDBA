@@ -58,10 +58,12 @@ cp lsnr_restart.sh /home/oracle/maint/keepalived/
 cp primary_check.sh /home/oracle/maint/keepalived/
 cp standby_check.sh /home/oracle/maint/keepalived/
 cp ora_env /home/oracle/maint/keepalived/
+
 chown oracle:oinstall /home/oracle/maint/keepalived/lsnr_restart.sh
 chown oracle:oinstall /home/oracle/maint/keepalived/primary_check.sh
 chown oracle:oinstall /home/oracle/maint/keepalived/standby_check.sh
 chown oracle:oinstall /home/oracle/maint/keepalived/ora_env
+
 chmod 744 /home/oracle/maint/keepalived/lsnr_restart.sh
 chmod 744 /home/oracle/maint/keepalived/primary_check.sh
 chmod 744 /home/oracle/maint/keepalived/standby_check.sh
