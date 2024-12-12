@@ -1,7 +1,8 @@
 #!/bin/bash
 display_usage() { 
-    echo -e "Usage: $0 [Filesystem | MountPoint]" 
-    echo -e "Example: $0 /appdata/data"
+    echo -e "На сколько нужно расширить ФС чтобы сбросить алерт"
+	echo -e "Использование: $0 [Filesystem | MountPoint] ..." 
+    echo -e "Пример: $0 /appdata/data /backup"
 	} 
 
 if [[ ( $@ == "--help") ||  $@ == "-h" ]] 
