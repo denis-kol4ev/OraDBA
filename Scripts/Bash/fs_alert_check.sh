@@ -11,7 +11,7 @@ then
 	exit 0
 fi 
 
-if [  $# -lt 1 ] 
+if [[  $# -lt 1 ]] 
 then 
 	display_usage
 	exit 1
