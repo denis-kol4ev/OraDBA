@@ -1,7 +1,7 @@
 #!/bin/bash
 display_usage() { 
     echo -e "На сколько нужно расширить ФС чтобы сбросить алерт"
-	echo -e "Использование: $0 [Filesystem | MountPoint] ..." 
+    echo -e "Использование: $0 [Filesystem | MountPoint] ..." 
     echo -e "Пример: $0 /appdata/data /backup"
 	} 
 
