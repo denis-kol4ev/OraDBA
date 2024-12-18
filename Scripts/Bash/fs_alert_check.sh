@@ -26,7 +26,7 @@ do
 		awk 'function ceil(v){return(v==int(v)) ? v : int(v)+1}
 		BEGIN {v_alert=80; v_alert_close=75; v_disk_multiple=50} 
 		{if (NR>1 && $5 >= v_alert) 
-			{v_fs_new = $3 / (v_alert_close / 100); 
+			{v_fs_new = $2 * ($5 / 100)  / (v_alert_close / 100); 
 			print "Текущий размер файловой системы", $6, ceil($2/1024) " (Гб), утилизация", $5, 
 			"\nНеобходимо расширить", $6, "на", ceil((v_fs_new - $2)/1024/v_disk_multiple)*v_disk_multiple, "(Гб) для снижения утилизации до", v_alert_close"%", 
 			"\n*кратность расширения", v_disk_multiple" (Гб)"} 
