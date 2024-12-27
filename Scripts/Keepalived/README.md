@@ -128,6 +128,18 @@ ip a | egrep "eth1$"
 
 ```shell
 vi $ORACLE_HOME/network/admin/tnsnames.ora
+
+orcl_primary =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = prm-db)(PORT = 1521))
+    (CONNECT_DATA = (SERVICE_NAME = keepalive_orcl))
+  )
+
+orcl_standby =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = stb-db)(PORT = 1521))
+    (CONNECT_DATA = (SERVICE_NAME = keepalive_orcl))
+  )
 ```
 
 orcl_primary и orcl_standby записи ссылающиеся на vip адреса prm-db и stb-db соответственно 
@@ -135,9 +147,18 @@ orcl_primary и orcl_standby записи ссылающиеся на vip адр
 убедимся что записи валидные для подключения
 
 ```shell
-echo "select HOST_NAME from v\$instance;" | sqlplus system/<pass>@orcl_primary
+echo "select HOST_NAME from v\$instance;" | sqlplus -s system/<pass>@orcl_primary
 
-echo "select HOST_NAME from v\$instance;" | sqlplus system/<pass>@orcl_standby
+HOST_NAME
+---------
+angel19
+
+echo "select HOST_NAME from v\$instance;" | sqlplus -s system/<pass>@orcl_standby
+
+HOST_NAME
+---------
+devil19
+
 ```
 
 3. Открываем лог keepalived на обоих серверах
@@ -260,3 +281,22 @@ Dec 24 18:45:25 devil19 Keepalived_vrrp[1285]: /home/oracle/maint/keepalived/sta
 Dec 24 18:45:30 devil19 Keepalived_vrrp[1285]: /home/oracle/maint/keepalived/standby_check.sh exited with status 1
 </pre>
 </details>
+
+6. Проверка подключения
+
+Убедимся что не меняя настройки подключения мы попадаем на сервер БД с нужной нам ролью
+
+```shell
+echo "select HOST_NAME from v\$instance;" | sqlplus -s system/<pass>@orcl_primary
+
+HOST_NAME
+---------
+devil19
+
+echo "select HOST_NAME from v\$instance;" | sqlplus -s system/<pass>@orcl_standby
+
+HOST_NAME
+---------
+angel19
+
+```
