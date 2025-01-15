@@ -63,3 +63,74 @@ begin
                             mod(actual_years, 12) || ' month');
   end if;
 end;
+
+-- Продолжение работы цикла в случае возникновения ошибки в одной или более итераций
+-- How to Handle Exceptions And Still Continue to Process a PL/SQL Procedure (Doc ID 1297175.1)
+
+-- Процедура закончит работу на итерации 5 при возникновении exception. 
+-- Код следующий после loop не выполнится.
+CREATE OR REPLACE PROCEDURE main_run IS
+  zero_found_exception EXCEPTION;
+  v_mod                NUMBER;
+  v_counter            NUMBER;
+BEGIN
+  FOR v_loop IN 1 .. 20 LOOP
+    v_counter := v_loop;
+    dbms_output.put_line('Loop number ' || v_loop);
+    v_mod := MOD(v_loop, 5);
+    IF (v_mod = 0) THEN
+      RAISE zero_found_exception;
+    END IF;
+  END LOOP;
+  dbms_output.put_line('Back in the outer section after the exception.');
+EXCEPTION
+  WHEN zero_found_exception THEN
+    dbms_output.put_line('Zero Found Exception was raised');
+  WHEN OTHERS THEN
+    RAISE;
+END;
+/
+
+begin
+  main_run;
+end;
+/
+
+-- Та же логика, но добавлен внутренний блок begin....end, в который добавлен свой exception.
+-- Процедура выполнит все 20 итераций, не смотря на то, что exception возникает 4 раза в ходе выполнения. 
+-- В случае возникновения обрабатываемого exception во внутреннем блоке begin....end , 
+-- код во внешнем блоке begin....end продолжит выполняться.
+CREATE OR REPLACE PROCEDURE main_run2 IS
+  zero_found_exception EXCEPTION;
+  v_mod                NUMBER;
+  v_counter            NUMBER;
+BEGIN
+  ---BEGIN outer block
+  dbms_output.put_line('In the outer section.');
+  FOR v_loop IN 1 .. 20 LOOP
+    BEGIN
+      ---BEGIN Inner block
+      v_counter := v_loop;
+      dbms_output.put_line('Loop number ' || v_loop);
+      v_mod := MOD(v_loop, 5);
+      IF (v_mod = 0) THEN
+        RAISE zero_found_exception;
+      END IF;
+    EXCEPTION
+      WHEN zero_found_exception THEN
+        dbms_output.put_line('Zero Found Exception was raised');
+      WHEN OTHERS THEN
+        RAISE;
+    END; ---END inner block
+  END LOOP;
+  dbms_output.put_line('Back in the outer section after the exception.');
+EXCEPTION
+  WHEN OTHERS THEN
+    RAISE;
+END; ---END outer block
+/
+
+begin
+  main_run2;
+end;
+/
