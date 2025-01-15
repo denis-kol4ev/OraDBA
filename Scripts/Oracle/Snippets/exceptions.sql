@@ -50,7 +50,7 @@ EXCEPTION
     DBMS_OUTPUT.PUT_LINE(' Cannot delete this department. There are employees in this department (child records exist.) ');
 END;
 
--- Case 5
+-- Case 4
 -- Raise a user-defined exception via RAISE_APPLICATION_ERROR procedure 
 declare
   date_of_manufacture date := to_date('01.10.2019', 'dd.mm.yyyy');
@@ -68,7 +68,7 @@ begin
   end if;
 end;
 
--- Case 6
+-- Case 5
 -- Продолжение работы цикла в случае возникновения ошибки в одной или более итераций
 -- How to Handle Exceptions And Still Continue to Process a PL/SQL Procedure (Doc ID 1297175.1)
 
