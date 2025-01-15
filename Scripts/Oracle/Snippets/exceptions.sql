@@ -1,3 +1,4 @@
+-- Case 1
 -- Handling predefined exceptions
 DECLARE
   v_ename   employees.last_name%TYPE;
@@ -20,6 +21,7 @@ EXCEPTION
     INSERT INTO messages (results) VALUES ('Some other error occurred.');
 END;
 
+-- Case 2
 -- Handling standard oracle exceptions
 -- 00001, 00000, "unique constraint (%s.%s) violated"
 BEGIN
@@ -34,6 +36,7 @@ EXCEPTION
 END IF;
 END;
 
+-- Case 3
 -- Handling standard oracle exceptions with EXCEPTION_INIT directive
 -- 02292 "integrity constraint (%s.%s) violated - child record found"
 DECLARE
@@ -47,6 +50,7 @@ EXCEPTION
     DBMS_OUTPUT.PUT_LINE(' Cannot delete this department. There are employees in this department (child records exist.) ');
 END;
 
+-- Case 5
 -- Raise a user-defined exception via RAISE_APPLICATION_ERROR procedure 
 declare
   date_of_manufacture date := to_date('01.10.2019', 'dd.mm.yyyy');
@@ -64,6 +68,7 @@ begin
   end if;
 end;
 
+-- Case 6
 -- Продолжение работы цикла в случае возникновения ошибки в одной или более итераций
 -- How to Handle Exceptions And Still Continue to Process a PL/SQL Procedure (Doc ID 1297175.1)
 
@@ -97,9 +102,8 @@ end;
 /
 
 -- Та же логика, но добавлен внутренний блок begin....end, в который добавлен свой exception.
--- Процедура выполнит все 20 итераций, не смотря на то, что exception возникает 4 раза в ходе выполнения. 
--- В случае возникновения обрабатываемого exception во внутреннем блоке begin....end , 
--- код во внешнем блоке begin....end продолжит выполняться.
+-- Процедура выполнит все 20 итераций, не смотря на то, что обрабатываемый exception возникает 4 раза в ходе выполнения. 
+-- Код следующий после loop выполнится.
 CREATE OR REPLACE PROCEDURE main_run2 IS
   zero_found_exception EXCEPTION;
   v_mod                NUMBER;
