@@ -73,7 +73,7 @@ end;
 -- How to Handle Exceptions And Still Continue to Process a PL/SQL Procedure (Doc ID 1297175.1)
 
 -- Процедура закончит работу на итерации 5 при возникновении exception. 
--- Код следующий после loop не выполнится.
+-- Код следующий после end loop не выполнится.
 CREATE OR REPLACE PROCEDURE main_run IS
   zero_found_exception EXCEPTION;
   v_mod                NUMBER;
@@ -103,7 +103,7 @@ end;
 
 -- Та же логика, но добавлен внутренний блок begin....end, в который добавлен свой exception.
 -- Процедура выполнит все 20 итераций, не смотря на то, что обрабатываемый exception возникает 4 раза в ходе выполнения. 
--- Код следующий после loop выполнится.
+-- Код следующий после end loop выполнится.
 CREATE OR REPLACE PROCEDURE main_run2 IS
   zero_found_exception EXCEPTION;
   v_mod                NUMBER;
