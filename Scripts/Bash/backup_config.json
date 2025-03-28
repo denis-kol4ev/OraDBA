@@ -1,0 +1,29 @@
+{
+    "backup_plan": "v1.0.",
+    "backup_list": [
+        {
+            "backup_name": "folder1_bkp",
+            "source_folder": "folder1",
+            "target_folder": "backup"
+
+        },
+        {
+            "backup_name": "folder2_bkp",
+            "source_folder": "folder2",
+            "target_folder": "backup"
+
+        },
+        {
+            "backup_name": "folder3_bkp",
+            "source_folder": "folder3",
+            "target_folder": "backup"
+
+        },
+        {
+            "backup_name": "folder4_bkp",
+            "source_folder": "folder4",
+            "target_folder": "backup"
+
+        }
+    ]
+}
