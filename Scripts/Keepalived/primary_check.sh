@@ -17,5 +17,4 @@ select case when sys_context('USERENV', 'DATABASE_ROLE')='PRIMARY' then to_numbe
 exit
 EOF
 )
-#echo 'exit'$rec
 exit $rec
