@@ -1,20 +1,19 @@
+# -*- coding: utf-8 -*-
+
 import re
 import sys
 
 x = len(sys.argv)
 if x == 1:
-    print(f'Для запуска необходимо передать аргументы.')
-    print(f'Воспользуйтесь справкой: {sys.argv[0]} -h или --help')
+    print('Для запуска необходимо передать аргументы.')
+    print('Воспользуйтесь справкой: ' + sys.argv[0] + ' -h или --help')
     exit(1)
 if sys.argv[1] in ('-h','--help'):
-    print(f'Очищаем alert log от записей logminer и записываем результат в новый файл.')
-    print(f'Использование: {sys.argv[0]} <input_file> <output_file>')
-    print(f'Пример: {sys.argv[0]}  /tmp/alert_prd1.log /tmp/alert_prd1_clean.log')
+    print('Очищаем alert log от записей logminer и записываем результат в новый файл.')
+    print('Использование: ' + sys.argv[0] + ' <input_file> <output_file>')
+    print('Пример: ' + sys.argv[0] + ' /tmp/alert_prd1.log /tmp/alert_prd1_clean.log')
     exit(1)
-print(sys.argv)
 
-#input_file = '/tmp/alert_prd1.log'
-#output_file = '/tmp/alert_prd1_clean.log'
 in_file = open(sys.argv[1], 'r')
 out_file = open(sys.argv[2], 'w')
 lines = in_file.readlines()
