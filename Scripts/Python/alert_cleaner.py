@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -32,3 +33,4 @@ if prev_line is not None:
     out_file.write(prev_line)
 
 out_file.close()
+print('Результаты сохранены в ' + sys.argv[2])
