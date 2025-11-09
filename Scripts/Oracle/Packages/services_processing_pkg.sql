@@ -1,4 +1,4 @@
--- РќРµРѕР±С…РѕРґРёРјС‹Рµ РїСЂРёРІРёР»РµРіРёРё
+-- Необходимые привилегии
 create user maint identified by Zz123456;
 alter user maint quota unlimited on users;
 grant create trigger to maint;
@@ -9,7 +9,7 @@ grant select on v_$database to maint;
 grant execute on dbms_service to maint;
 grant execute on dbms_system to maint;
 
--- РўР°Р±Р»РёС†Р° РЅР°СЃС‚СЂРѕРµРє
+-- Таблица настроек
 create table maint.services (
    service_name varchar2(64) not null,
    start_on     varchar2(64) default 'BOTH',
@@ -20,71 +20,70 @@ create table maint.services (
                             'BOTH' ) )
 );
 
-CREATE OR REPLACE PACKAGE maint.services_processing_pkg as
+create or replace package maint.services_processing_pkg as
 
-/*
-NAME
- maint.services_processing_pkg - СѓРїСЂР°РІР»РµРЅРёРµ СЃРµСЂРІРёСЃР°РјРё
+  /*
+  NAME
+   maint.services_processing_pkg - управление сервисами
+  
+  DESCRIPTION
+   Пакет предназначен для управления сервисами через dbms_service 
+   на основании таблицы настроек - maint.services
+   Для каждого сервиса в таблице настроек определяется при какой
+   роли БД он должен быть запущен или же должен запускаться вне
+   зависимости от роли.
+         
+  NOTES
+   Все процедуры пакета логируют действия в алертлог БД
+  
+  */
 
-DESCRIPTION
- РџР°РєРµС‚ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅ РґР»СЏ СѓРїСЂР°РІР»РµРЅРёСЏ СЃРµСЂРІРёСЃР°РјРё С‡РµСЂРµР· dbms_service 
- РЅР° РѕСЃРЅРѕРІР°РЅРёРё С‚Р°Р±Р»РёС†С‹ РЅР°СЃС‚СЂРѕРµРє - maint.services
- Р”Р»СЏ РєР°Р¶РґРѕРіРѕ СЃРµСЂРІРёСЃР° РІ С‚Р°Р±Р»РёС†Рµ РЅР°СЃС‚СЂРѕРµРє РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ РїСЂРё РєР°РєРѕР№
- СЂРѕР»Рё Р‘Р” РѕРЅ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ Р·Р°РїСѓС‰РµРЅ РёР»Рё Р¶Рµ РґРѕР»Р¶РµРЅ Р·Р°РїСѓСЃРєР°С‚СЊСЃСЏ РІРЅРµ
- Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЂРѕР»Рё.
-       
-NOTES
- Р’СЃРµ РїСЂРѕС†РµРґСѓСЂС‹ РїР°РєРµС‚Р° Р»РѕРіРёСЂСѓСЋС‚ РґРµР№СЃС‚РІРёСЏ РІ Р°Р»РµСЂС‚Р»РѕРі Р‘Р”
+  -- Проверка роли БД
+  function is_primary return boolean;
+  function is_standby return boolean;
 
-*/
+  -- Проверка существования сервиса
+  function is_service_exist(p_service in dba_services.network_name%type)
+    return boolean;
 
--- РџСЂРѕРІРµСЂРєР° СЂРѕР»Рё Р‘Р”
-function is_primary return boolean;
-function is_standby return boolean;
+  -- Проверка что сервис запущен
+  function is_service_running(p_service in v$active_services.network_name%type)
+    return boolean;
 
--- РџСЂРѕРІРµСЂРєР° СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёСЏ СЃРµСЂРІРёСЃР°
-function is_service_exist(p_service in dba_services.network_name%type) return boolean;
+  -- Запуск и остановка сервиса
+  procedure start_service(p_service in varchar2);
+  procedure stop_service(p_service in varchar2);
 
--- РџСЂРѕРІРµСЂРєР° С‡С‚Рѕ СЃРµСЂРІРёСЃ Р·Р°РїСѓС‰РµРЅ
-function is_service_running(p_service in v$active_services.network_name%type) return boolean;
+  -- Создание сервиса и его добавление в таблицу настроек 
+  -- Допустимые значения для p_start_on
+  -- PRIMARY или PHYSICAL STANDBY - запуск в зависимости от роли БД 
+  -- BOTH - если необходимо запускать не зависимо от роли БД
+  procedure create_service(p_service  in varchar2,
+                           p_start_on in varchar2 default 'BOTH');
 
--- Р—Р°РїСѓСЃРє Рё РѕСЃС‚Р°РЅРѕРІРєР° СЃРµСЂРІРёСЃР°
-procedure start_service(p_service in varchar2);
-procedure stop_service(p_service in varchar2);
+  -- Удаление сервиса из БД и таблицы настроек 
+  procedure delete_service(p_service in varchar2);
 
--- РЎРѕР·РґР°РЅРёРµ СЃРµСЂРІРёСЃР° Рё РµРіРѕ РґРѕР±Р°РІР»РµРЅРёРµ РІ С‚Р°Р±Р»РёС†Сѓ РЅР°СЃС‚СЂРѕРµРє 
--- Р”РѕРїСѓСЃС‚РёРјС‹Рµ Р·РЅР°С‡РµРЅРёСЏ РґР»СЏ p_start_on
--- PRIMARY РёР»Рё PHYSICAL STANDBY - Р·Р°РїСѓСЃРє РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЂРѕР»Рё Р‘Р” 
--- BOTH - РµСЃР»Рё РЅРµРѕР±С…РѕРґРёРјРѕ Р·Р°РїСѓСЃРєР°С‚СЊ РЅРµ Р·Р°РІРёСЃРёРјРѕ РѕС‚ СЂРѕР»Рё Р‘Р”
-procedure create_service(p_service in varchar2, p_start_on in varchar2 default 'BOTH');
+  -- Запуск и остановка сервисов согласно правилам таблицы настроек
+  procedure bring_services_into_consistent_state;
 
--- РЈРґР°Р»РµРЅРёРµ СЃРµСЂРІРёСЃР° РёР· Р‘Р” Рё С‚Р°Р±Р»РёС†С‹ РЅР°СЃС‚СЂРѕРµРє 
-procedure delete_service(p_service in varchar2);
-
--- Р—Р°РїСѓСЃРє Рё РѕСЃС‚Р°РЅРѕРІРєР° СЃРµСЂРІРёСЃРѕРІ СЃРѕРіР»Р°СЃРЅРѕ РїСЂР°РІРёР»Р°Рј С‚Р°Р±Р»РёС†С‹ РЅР°СЃС‚СЂРѕРµРє
-procedure bring_services_into_consistent_state;
-
-END services_processing_pkg;
+end services_processing_pkg;
 /
 
 CREATE OR REPLACE PACKAGE BODY maint.services_processing_pkg AS
 function is_primary return boolean as
-    v_role varchar2(100);
-  begin
-      select d.DATABASE_ROLE
-        into v_role
-        from v$database d;
-    return v_role = 'PRIMARY';
-  end is_primary;
+  v_role varchar2(100);
+begin
+  select d.database_role into v_role from v$database d;
+  return v_role = 'PRIMARY';
+end is_primary;
 
 function is_standby return boolean as
-    v_role varchar2(100);
-  begin
-      select d.DATABASE_ROLE
-        into v_role
-        from v$database d;
-    return v_role = 'PHYSICAL STANDBY';
-  end is_standby;
+  v_role varchar2(100);
+begin
+  select d.database_role into v_role from v$database d;
+  return v_role = 'PHYSICAL STANDBY';
+end is_standby;
 
 function is_service_exist(p_service dba_services.network_name%type) return boolean as
     v_service_check dba_services.network_name%type;
@@ -138,83 +137,84 @@ procedure create_service(p_service in varchar2, p_start_on in varchar2 default '
     when others then sys.dbms_system.ksdwrt(2, $$plsql_unit||': ' || SQLERRM);
   end create_service;
 
-procedure delete_service(p_service in varchar2) as 
-  begin
-    if is_service_exist(p_service) then 
-           if is_service_running(p_service) then 
-            stop_service(p_service => p_service);
-           end if;
-    sys.dbms_system.ksdwrt(2, $$plsql_unit||': DELETE_SERVICE '|| p_service);
+procedure delete_service(p_service in varchar2) as
+begin
+  if is_service_exist(p_service) then
+    if is_service_running(p_service) then
+      stop_service(p_service => p_service);
+    end if;
+    sys.dbms_system.ksdwrt(2, $$plsql_unit || ': DELETE_SERVICE ' || p_service);
     sys.dbms_service.delete_service(p_service);
     delete from maint.services where service_name = p_service;
     commit;
-         end if;
-  exception
-    when others then sys.dbms_system.ksdwrt(2, $$plsql_unit||': ' || SQLERRM);
-  end delete_service;
+  end if;
+exception
+  when others then
+    sys.dbms_system.ksdwrt(2, $$plsql_unit || ': ' || sqlerrm);
+end delete_service;
 
-procedure bring_services_into_consistent_state as 
-  begin
-       if is_primary then
-     for i in (select service_name, start_on from maint.services) LOOP
-       if i.start_on in ('PRIMARY', 'BOTH') then
-         if is_service_exist(i.service_name) then 
-           if not is_service_running(i.service_name) then 
+procedure bring_services_into_consistent_state as
+begin
+  if is_primary then
+    for i in (select service_name, start_on from maint.services) loop
+      if i.start_on in ('PRIMARY', 'BOTH') then
+        if is_service_exist(i.service_name) then
+          if not is_service_running(i.service_name) then
             start_service(p_service => i.service_name);
-           end if;
-         end if;  
-       else
+          end if;
+        end if;
+      else
         if i.start_on in ('PHYSICAL STANDBY') then
-         if is_service_exist(i.service_name) then 
-           if is_service_running(i.service_name) then 
-            stop_service(p_service => i.service_name);
-           end if;
-         end if;
+          if is_service_exist(i.service_name) then
+            if is_service_running(i.service_name) then
+              stop_service(p_service => i.service_name);
+            end if;
+          end if;
         end if;
-       end if;
-       end loop;
-    END IF;
-    if is_standby then
-     for i in (select service_name, start_on from maint.services) LOOP
-       if i.start_on in ('PHYSICAL STANDBY', 'BOTH') then
-         if is_service_exist(i.service_name) then 
-           if not is_service_running(i.service_name) then 
+      end if;
+    end loop;
+  end if;
+  if is_standby then
+    for i in (select service_name, start_on from maint.services) loop
+      if i.start_on in ('PHYSICAL STANDBY', 'BOTH') then
+        if is_service_exist(i.service_name) then
+          if not is_service_running(i.service_name) then
             start_service(p_service => i.service_name);
-           end if;
-         end if;  
-       else
-        if i.start_on in ('PRIMARY') then
-         if is_service_exist(i.service_name) then 
-           if is_service_running(i.service_name) then 
-            stop_service(p_service => i.service_name);
-           end if;
-         end if;
+          end if;
         end if;
-       end if;
-       end loop;
-       END IF;
-  end bring_services_into_consistent_state;
+      else
+        if i.start_on in ('PRIMARY') then
+          if is_service_exist(i.service_name) then
+            if is_service_running(i.service_name) then
+              stop_service(p_service => i.service_name);
+            end if;
+          end if;
+        end if;
+      end if;
+    end loop;
+  end if;
+end bring_services_into_consistent_state;
 
 END services_processing_pkg;
 /
 
--- Р—Р°РїСѓСЃРєР°РµРј РЅРµРѕР±С…РѕРґРёРјС‹Рµ СЃРµСЂРІРёСЃС‹ СЃРѕРіР»Р°СЃРЅРѕ С‚Р°Р±Р»РёС†С‹ maint.services
+-- Запускаем необходимые сервисы согласно таблицы maint.services
 begin
-   maint.services_processing_pkg.bring_services_into_consistent_state;
+  maint.services_processing_pkg.bring_services_into_consistent_state;
 end;
 /
 
--- Р—Р°РїСѓСЃРєР°РµРј РЅРµРѕР±С…РѕРґРёРјС‹Рµ СЃРµСЂРІРёСЃС‹ СЃРѕРіР»Р°СЃРЅРѕ С‚Р°Р±Р»РёС†С‹ maint.services РїРѕСЃР»Рµ СЃС‚Р°СЂС‚Р° Р‘Р”
-create or replace trigger maint.services_after_startup
+-- Запускаем необходимые сервисы согласно таблицы maint.services после старта БД
+  create or replace trigger maint.services_after_startup
   after startup on database
 begin
   maint.services_processing_pkg.bring_services_into_consistent_state;
 end;
 /
 
--- Р—Р°РїСѓСЃРєР°РµРј РЅРµРѕР±С…РѕРґРёРјС‹Рµ СЃРµСЂРІРёСЃС‹ СЃРѕРіР»Р°СЃРЅРѕ С‚Р°Р±Р»РёС†С‹ maint.services РїРѕСЃР»Рµ СЃРјРµРЅС‹ СЂРѕР»Рё Р‘Р”
-create or replace trigger maint.services_after_role_change
-  after DB_ROLE_CHANGE on database
+-- Запускаем необходимые сервисы согласно таблицы maint.services после смены роли БД
+  create or replace trigger maint.services_after_role_change
+  after db_role_change on database
 begin
   maint.services_processing_pkg.bring_services_into_consistent_state;
 end;
