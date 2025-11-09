@@ -1,4 +1,4 @@
--- Необходимые привилегии
+-- РќРµРѕР±С…РѕРґРёРјС‹Рµ РїСЂРёРІРёР»РµРіРёРё
 create user maint identified by Zz123456;
 alter user maint quota unlimited on users;
 grant create trigger to maint;
@@ -9,7 +9,7 @@ grant select on v_$database to maint;
 grant execute on dbms_service to maint;
 grant execute on dbms_system to maint;
 
--- Таблица настроек
+-- РўР°Р±Р»РёС†Р° РЅР°СЃС‚СЂРѕРµРє
 create table maint.services (
    service_name varchar2(64) not null,
    start_on     varchar2(64) default 'BOTH',
@@ -24,47 +24,47 @@ create or replace package maint.services_processing_pkg as
 
   /*
   NAME
-   maint.services_processing_pkg - управление сервисами
+   maint.services_processing_pkg - СѓРїСЂР°РІР»РµРЅРёРµ СЃРµСЂРІРёСЃР°РјРё
   
   DESCRIPTION
-   Пакет предназначен для управления сервисами через dbms_service 
-   на основании таблицы настроек - maint.services
-   Для каждого сервиса в таблице настроек определяется при какой
-   роли БД он должен быть запущен или же должен запускаться вне
-   зависимости от роли.
+   РџР°РєРµС‚ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅ РґР»СЏ СѓРїСЂР°РІР»РµРЅРёСЏ СЃРµСЂРІРёСЃР°РјРё С‡РµСЂРµР· dbms_service 
+   РЅР° РѕСЃРЅРѕРІР°РЅРёРё С‚Р°Р±Р»РёС†С‹ РЅР°СЃС‚СЂРѕРµРє - maint.services
+   Р”Р»СЏ РєР°Р¶РґРѕРіРѕ СЃРµСЂРІРёСЃР° РІ С‚Р°Р±Р»РёС†Рµ РЅР°СЃС‚СЂРѕРµРє РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ РїСЂРё РєР°РєРѕР№
+   СЂРѕР»Рё Р‘Р” РѕРЅ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ Р·Р°РїСѓС‰РµРЅ РёР»Рё Р¶Рµ РґРѕР»Р¶РµРЅ Р·Р°РїСѓСЃРєР°С‚СЊСЃСЏ РІРЅРµ
+   Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЂРѕР»Рё.
          
   NOTES
-   Все процедуры пакета логируют действия в алертлог БД
+   Р’СЃРµ РїСЂРѕС†РµРґСѓСЂС‹ РїР°РєРµС‚Р° Р»РѕРіРёСЂСѓСЋС‚ РґРµР№СЃС‚РІРёСЏ РІ Р°Р»РµСЂС‚Р»РѕРі Р‘Р”
   
   */
 
-  -- Проверка роли БД
+  -- РџСЂРѕРІРµСЂРєР° СЂРѕР»Рё Р‘Р”
   function is_primary return boolean;
   function is_standby return boolean;
 
-  -- Проверка существования сервиса
+  -- РџСЂРѕРІРµСЂРєР° СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёСЏ СЃРµСЂРІРёСЃР°
   function is_service_exist(p_service in dba_services.network_name%type)
     return boolean;
 
-  -- Проверка что сервис запущен
+  -- РџСЂРѕРІРµСЂРєР° С‡С‚Рѕ СЃРµСЂРІРёСЃ Р·Р°РїСѓС‰РµРЅ
   function is_service_running(p_service in v$active_services.network_name%type)
     return boolean;
 
-  -- Запуск и остановка сервиса
+  -- Р—Р°РїСѓСЃРє Рё РѕСЃС‚Р°РЅРѕРІРєР° СЃРµСЂРІРёСЃР°
   procedure start_service(p_service in varchar2);
   procedure stop_service(p_service in varchar2);
 
-  -- Создание сервиса и его добавление в таблицу настроек 
-  -- Допустимые значения для p_start_on
-  -- PRIMARY или PHYSICAL STANDBY - запуск в зависимости от роли БД 
-  -- BOTH - если необходимо запускать не зависимо от роли БД
+  -- РЎРѕР·РґР°РЅРёРµ СЃРµСЂРІРёСЃР° Рё РµРіРѕ РґРѕР±Р°РІР»РµРЅРёРµ РІ С‚Р°Р±Р»РёС†Сѓ РЅР°СЃС‚СЂРѕРµРє 
+  -- Р”РѕРїСѓСЃС‚РёРјС‹Рµ Р·РЅР°С‡РµРЅРёСЏ РґР»СЏ p_start_on
+  -- PRIMARY РёР»Рё PHYSICAL STANDBY - Р·Р°РїСѓСЃРє РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЂРѕР»Рё Р‘Р” 
+  -- BOTH - РµСЃР»Рё РЅРµРѕР±С…РѕРґРёРјРѕ Р·Р°РїСѓСЃРєР°С‚СЊ РЅРµ Р·Р°РІРёСЃРёРјРѕ РѕС‚ СЂРѕР»Рё Р‘Р”
   procedure create_service(p_service  in varchar2,
                            p_start_on in varchar2 default 'BOTH');
 
-  -- Удаление сервиса из БД и таблицы настроек 
+  -- РЈРґР°Р»РµРЅРёРµ СЃРµСЂРІРёСЃР° РёР· Р‘Р” Рё С‚Р°Р±Р»РёС†С‹ РЅР°СЃС‚СЂРѕРµРє 
   procedure delete_service(p_service in varchar2);
 
-  -- Запуск и остановка сервисов согласно правилам таблицы настроек
+  -- Р—Р°РїСѓСЃРє Рё РѕСЃС‚Р°РЅРѕРІРєР° СЃРµСЂРІРёСЃРѕРІ СЃРѕРіР»Р°СЃРЅРѕ РїСЂР°РІРёР»Р°Рј С‚Р°Р±Р»РёС†С‹ РЅР°СЃС‚СЂРѕРµРє
   procedure bring_services_into_consistent_state;
 
 end services_processing_pkg;
@@ -198,13 +198,13 @@ end bring_services_into_consistent_state;
 END services_processing_pkg;
 /
 
--- Запускаем необходимые сервисы согласно таблицы maint.services
+-- Р—Р°РїСѓСЃРєР°РµРј РЅРµРѕР±С…РѕРґРёРјС‹Рµ СЃРµСЂРІРёСЃС‹ СЃРѕРіР»Р°СЃРЅРѕ С‚Р°Р±Р»РёС†С‹ maint.services
 begin
   maint.services_processing_pkg.bring_services_into_consistent_state;
 end;
 /
 
--- Запускаем необходимые сервисы согласно таблицы maint.services после старта БД
+-- Р—Р°РїСѓСЃРєР°РµРј РЅРµРѕР±С…РѕРґРёРјС‹Рµ СЃРµСЂРІРёСЃС‹ СЃРѕРіР»Р°СЃРЅРѕ С‚Р°Р±Р»РёС†С‹ maint.services РїРѕСЃР»Рµ СЃС‚Р°СЂС‚Р° Р‘Р”
   create or replace trigger maint.services_after_startup
   after startup on database
 begin
@@ -212,7 +212,7 @@ begin
 end;
 /
 
--- Запускаем необходимые сервисы согласно таблицы maint.services после смены роли БД
+-- Р—Р°РїСѓСЃРєР°РµРј РЅРµРѕР±С…РѕРґРёРјС‹Рµ СЃРµСЂРІРёСЃС‹ СЃРѕРіР»Р°СЃРЅРѕ С‚Р°Р±Р»РёС†С‹ maint.services РїРѕСЃР»Рµ СЃРјРµРЅС‹ СЂРѕР»Рё Р‘Р”
   create or replace trigger maint.services_after_role_change
   after db_role_change on database
 begin
