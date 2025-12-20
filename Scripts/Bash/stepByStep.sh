@@ -2,16 +2,20 @@
 
 Help()
 {
-   echo "Script for cloning a production database into a test environment."
+   echo "Script for step by step tasks execution."
    echo
    echo "Syntax: $0 [-h|-s|]"
    echo "options:"
    echo "-h   Print this Help."
-   echo "-s   Start step at what should the script be run."
+   echo "-s   The task number from which to start executing the script."
    echo
 }
- 
-START_STEP=1
+
+# START_TASK шаг с которого запускается скрипт (на начальные шаги проверок это не рпспространяется, они выполняются всегда)
+# CURRENT_TASK  текущеий шаг, увеличивается после выполнения очредного шага
+# TASK_ID  номер задания
+
+START_TASK=1
 
 while getopts ":hs:" option; do
    case $option in
@@ -19,7 +23,7 @@ while getopts ":hs:" option; do
          Help
          exit;;
       s)
-         START_STEP=$OPTARG;;
+         START_TASK=$OPTARG;;
       :)
         echo "Error: option -$OPTARG requires an argument (integer)"
         exit;;
@@ -29,33 +33,35 @@ while getopts ":hs:" option; do
    esac
 done
 
-if ! [[ ${START_STEP} =~ ^[0-9]+$ ]]; then
+if ! [[ ${START_TASK} =~ ^[0-9]+$ ]]; then
     echo "Error: -s argument must be an integer"
     exit 1
 fi
 
-echo "Start script from step: ${START_STEP}"
+echo "Start script from task: ${START_TASK}"
 
-CURR_STEP=1
-if [[ ${CURR_STEP} -eq ${START_STEP} ]]; then
-    echo "Do work for step " ${CURR_STEP}
-    ((START_STEP+=1))
+CURRENT_TASK=${START_TASK}
+
+TASK_ID=1
+if [[ ${TASK_ID} -ge ${CURRENT_TASK} ]]; then
+    echo "Do work for task " ${TASK_ID}
+    ((CURRENT_TASK+=1))
 else
-    echo "Step" ${CURR_STEP} "skipped"
+    echo "Task" ${TASK_ID} "skipped"
 fi
 
-CURR_STEP=2
-if [[ ${CURR_STEP} -eq ${START_STEP} ]]; then
-    echo "Do work for step " ${CURR_STEP}
-    ((START_STEP+=1))
+TASK_ID=2
+if [[ ${TASK_ID} -ge ${CURRENT_TASK} ]]; then
+    echo "Do work for task " ${TASK_ID}
+    ((CURRENT_TASK+=1))
 else
-    echo "Step" ${CURR_STEP} "skipped"
+    echo "Task" ${TASK_ID} "skipped"
 fi
 
-CURR_STEP=3
-if [[ ${CURR_STEP} -eq ${START_STEP} ]]; then
-    echo "Do work for step " ${CURR_STEP}
-    ((START_STEP+=1))
+TASK_ID=3
+if [[ ${TASK_ID} -ge ${CURRENT_TASK} ]]; then
+    echo "Do work for task " ${TASK_ID}
+    ((CURRENT_TASK+=1))
 else
-    echo "Step" ${CURR_STEP} "skipped"
+    echo "Task" ${TASK_ID} "skipped"
 fi
