@@ -46,3 +46,17 @@ select * from hr.t1;
 select * from hr.t1_aud;
 
 -- 2. System triggers
+
+-- 2.1 Триггеры уровня схемы. 
+-- Срабатывают при выполнении операций под пользователем заданным в условии триггера <имя>.schema
+-- Триггер ниже сработает на drop table hr.t1; если команду выполнить под пользователем hr, 
+-- но не сработает если выполнить ту же команду под пользователем system.
+create or replace trigger hr.ddl_trg
+   before ddl on hr.schema begin
+      dbms_output.put_line('owner= ' || ora_dict_obj_owner);
+      dbms_output.put_line('name = ' || ora_dict_obj_name);
+      dbms_output.put_line('type = ' || ora_dict_obj_type);
+      dbms_output.put_line('event= ' || ora_sysevent);
+   end;
+
+-- 2.2 Триггеры уровня базы. 
